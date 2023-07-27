@@ -31,6 +31,8 @@ dependencies {
 	runtimeOnly("com.h2database:h2")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.mockito:mockito-core:5.4.0")
+	testImplementation("org.assertj:assertj-core:3.24.2")
 }
 
 tasks.withType<Test> {
