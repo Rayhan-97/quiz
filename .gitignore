@@ -45,6 +45,7 @@ Icon
 .gradle/
 build/
 
+out/
 
 ### Eclipse ###
 *.pydevproject
