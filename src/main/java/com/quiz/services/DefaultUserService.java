@@ -50,11 +50,8 @@ public class DefaultUserService implements UserService
         }
         passwordValidator.validate(newUserDto.password());
 
-        User user = new User();
-        user.setUsername(newUserDto.username());
-        user.setEmail(newUserDto.email());
         String passwordHash = passwordHashGenerator.generateHash(newUserDto.password());
-        user.setPasswordHash(passwordHash);
+        User user = new User(newUserDto.username(), newUserDto.email(), passwordHash);
 
         userRepository.save(user);
     }

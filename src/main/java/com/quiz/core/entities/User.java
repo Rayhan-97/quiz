@@ -1,15 +1,20 @@
 package com.quiz.core.entities;
 
 import com.quiz.core.entities.validators.ValidEmail;
+import com.quiz.core.entities.validators.ValidUsername;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @SuppressWarnings("unused")
 @Entity
+@Getter
+@Setter
+@EqualsAndHashCode
 public class User
 {
     @Id
@@ -17,6 +22,7 @@ public class User
     long id;
 
     @Column(nullable = false)
+    @ValidUsername
     String username;
 
     @Column(nullable = false, unique = true)
@@ -26,64 +32,14 @@ public class User
     @Column(nullable = false)
     String passwordHash;
 
-    public long getId()
+    private User()
     {
-        return id;
+        // no args jackson constructor
     }
-
-    public void setId(long id)
-    {
-        this.id = id;
-    }
-
-    public String getUsername()
-    {
-        return username;
-    }
-
-    public void setUsername(String username)
+    public User(String username, String email, String passwordHash)
     {
         this.username = username;
-    }
-
-    public String getEmail()
-    {
-        return email;
-    }
-
-    public void setEmail(String email)
-    {
         this.email = email;
-    }
-
-    public String getPasswordHash()
-    {
-        return passwordHash;
-    }
-
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o)
-        {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass())
-        {
-            return false;
-        }
-        User user = (User) o;
-        return id == user.id && Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(passwordHash, user.passwordHash);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(id, username, email, passwordHash);
-    }
-
-    public void setPasswordHash(String passwordHash)
-    {
         this.passwordHash = passwordHash;
     }
 }

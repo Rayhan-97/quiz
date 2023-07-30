@@ -51,10 +51,7 @@ class DefaultUserServiceTest
         String passwordHash = "super-secret-hash";
         when(passwordHashGenerator.generateHash(password)).thenReturn(passwordHash);
 
-        User expectedUser = new User();
-        expectedUser.setUsername(username);
-        expectedUser.setEmail(email);
-        expectedUser.setPasswordHash(passwordHash);
+        User expectedUser = new User(username, email, passwordHash);
 
         userService.registerNewUser(newUserDto);
 
@@ -65,8 +62,7 @@ class DefaultUserServiceTest
     public void givenNewUserWithEmailAlreadyExists_whenRegister_thenUserAlreadyExistsException()
     {
         String email = "test@test";
-        User user = new User();
-        user.setEmail(email);
+        User user = new User("username", email, "password hash");
         Optional<User> optionalUser = Optional.of(user);
         when(userRepository.findByEmail(email)).thenReturn(optionalUser);
 
