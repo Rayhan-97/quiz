@@ -42,7 +42,10 @@ public class DefaultUserService implements UserService
 
         usernameValidator.validate(newUserDto.username());
         passwordValidator.validate(newUserDto.password());
-        emailValidator.validate(newUserDto.email());
+        if (!emailValidator.validate(newUserDto.email()))
+        {
+            throw new IllegalArgumentException();
+        }
 
         User user = new User();
         user.setUsername(newUserDto.username());

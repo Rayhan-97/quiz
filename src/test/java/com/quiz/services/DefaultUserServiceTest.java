@@ -7,6 +7,7 @@ import com.quiz.core.validators.EmailValidator;
 import com.quiz.core.validators.PasswordValidator;
 import com.quiz.core.validators.UsernameValidator;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -30,6 +31,12 @@ class DefaultUserServiceTest
         passwordValidator = mock(PasswordValidator.class);
         emailValidator = mock(EmailValidator.class);
         userService = new DefaultUserService(userRepository, passwordHashGenerator, usernameValidator, passwordValidator, emailValidator);
+    }
+
+    @BeforeEach
+    void setup()
+    {
+        when(emailValidator.validate(anyString())).thenReturn(true);
     }
 
     @Test
@@ -98,7 +105,7 @@ class DefaultUserServiceTest
         String invalidEmail = "invalid";
         NewUserDto newUserDto = new NewUserDto("username", invalidEmail, "password");
 
-        doThrow(IllegalArgumentException.class).when(emailValidator).validate(invalidEmail);
+        when(emailValidator.validate(invalidEmail)).thenReturn(false);
 
         Assertions.assertThatThrownBy(() -> userService.registerNewUser(newUserDto))
                 .isInstanceOf(IllegalArgumentException.class);

@@ -1,6 +1,9 @@
 package com.quiz.core.validators;
 
-public interface EmailValidator
+import com.quiz.core.entities.validators.ValidEmail;
+import jakarta.validation.ConstraintValidator;
+
+public interface EmailValidator extends ConstraintValidator<ValidEmail, String>
 {
-    void validate(String email);
+    boolean validate(String email);
 }

@@ -1,8 +1,8 @@
 package com.quiz.core.validators;
 
+import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,14 +13,21 @@ public class DefaultEmailValidator implements EmailValidator
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_PATTERN_REGEX);
 
     @Override
-    public void validate(String email)
+    public boolean validate(String email)
     {
-        Objects.requireNonNull(email);
+        if (email == null)
+        {
+            return false;
+        }
 
         Matcher matcher = EMAIL_PATTERN.matcher(email);
-        if (!matcher.matches())
-        {
-            throw new IllegalArgumentException("Invalid email");
-        }
+
+        return matcher.matches();
+    }
+
+    @Override
+    public boolean isValid(String value, ConstraintValidatorContext context)
+    {
+        return validate(value);
     }
 }

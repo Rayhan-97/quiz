@@ -1,27 +1,29 @@
 package com.quiz.core.validators;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class DefaultEmailValidatorTest
 {
     private final EmailValidator emailValidator = new DefaultEmailValidator();
 
     @Test
-    void givenValidEmail_whenValidate_thenDoNothing()
+    void givenValidEmail_whenValidate_thenTrue()
     {
         String validEmail = "valid@email.com";
-        emailValidator.validate(validEmail);
+        boolean validated = emailValidator.validate(validEmail);
+
+        Assertions.assertThat(validated).isTrue();
     }
 
     @Test
-    void givenNullEmail_whenValidate_thenNullPointerException()
+    void givenNullEmail_whenValidate_thenFalse()
     {
-        assertThatThrownBy(() -> emailValidator.validate(null))
-                .isInstanceOf(NullPointerException.class);
+        boolean validated = emailValidator.validate(null);
+
+        Assertions.assertThat(validated).isFalse();
     }
 
     @ParameterizedTest
@@ -36,9 +38,10 @@ class DefaultEmailValidatorTest
             "*@a.co",
             "a@*.co",
     })
-    void givenInvalidEmail_whenValidate_thenIllegalArgumentException(String invalidEmail)
+    void givenInvalidEmail_whenValidate_thenFalse(String invalidEmail)
     {
-        assertThatThrownBy(() -> emailValidator.validate(invalidEmail))
-                .isInstanceOf(IllegalArgumentException.class);
+        boolean validated = emailValidator.validate(invalidEmail);
+
+        Assertions.assertThat(validated).isFalse();
     }
 }

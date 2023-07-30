@@ -1,5 +1,6 @@
 package com.quiz.core.entities;
 
+import com.quiz.core.entities.validators.ValidEmail;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,6 +8,7 @@ import jakarta.persistence.Id;
 
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 @Entity
 public class User
 {
@@ -17,7 +19,8 @@ public class User
     @Column(nullable = false)
     String username;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
+    @ValidEmail
     String email;
 
     @Column(nullable = false)
