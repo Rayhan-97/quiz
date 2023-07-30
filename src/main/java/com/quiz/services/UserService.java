@@ -1,10 +1,10 @@
 package com.quiz.services;
 
-import com.quiz.core.entities.NewUserDto;
+import com.quiz.services.dtos.UserDto;
 
 public interface UserService
 {
-    void registerNewUser(NewUserDto newUserDto) throws UserAlreadyExistsException;
+    void registerNewUser(UserDto userDto) throws UserAlreadyExistsException;
 
     class UserAlreadyExistsException extends Exception
     {

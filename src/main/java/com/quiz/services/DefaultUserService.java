@@ -1,6 +1,6 @@
 package com.quiz.services;
 
-import com.quiz.core.entities.NewUserDto;
+import com.quiz.services.dtos.UserDto;
 import com.quiz.core.entities.User;
 import com.quiz.core.repositories.UserRepository;
 import com.quiz.core.validators.EmailValidator;
@@ -33,31 +33,31 @@ public class DefaultUserService implements UserService
     }
 
     @Override
-    public void registerNewUser(NewUserDto newUserDto) throws UserAlreadyExistsException
+    public void registerNewUser(UserDto userDto) throws UserAlreadyExistsException
     {
-        if (userAlreadyExists(newUserDto))
+        if (userAlreadyExists(userDto))
         {
-            throw new UserAlreadyExistsException(newUserDto.email());
+            throw new UserAlreadyExistsException(userDto.email());
         }
 
-        if (!usernameValidator.validate(newUserDto.username()))
+        if (!usernameValidator.validate(userDto.username()))
         {
             throw new IllegalArgumentException();
         }
-        if (!emailValidator.validate(newUserDto.email()))
+        if (!emailValidator.validate(userDto.email()))
         {
             throw new IllegalArgumentException();
         }
-        passwordValidator.validate(newUserDto.password());
+        passwordValidator.validate(userDto.password());
 
-        String passwordHash = passwordHashGenerator.generateHash(newUserDto.password());
-        User user = new User(newUserDto.username(), newUserDto.email(), passwordHash);
+        String passwordHash = passwordHashGenerator.generateHash(userDto.password());
+        User user = new User(userDto.username(), userDto.email(), passwordHash);
 
         userRepository.save(user);
     }
 
-    private boolean userAlreadyExists(NewUserDto newUserDto)
+    private boolean userAlreadyExists(UserDto userDto)
     {
-        return userRepository.findByEmail(newUserDto.email()).isPresent();
+        return userRepository.findByEmail(userDto.email()).isPresent();
     }
 }
