@@ -1,11 +1,11 @@
 package com.quiz.services;
 
-import com.quiz.services.dtos.UserDto;
 import com.quiz.core.entities.User;
 import com.quiz.core.repositories.UserRepository;
 import com.quiz.core.validators.EmailValidator;
 import com.quiz.core.validators.PasswordValidator;
 import com.quiz.core.validators.UsernameValidator;
+import com.quiz.services.dtos.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +48,10 @@ public class DefaultUserService implements UserService
         {
             throw new IllegalArgumentException();
         }
-        passwordValidator.validate(userDto.password());
+        if (!passwordValidator.validate(userDto.password()))
+        {
+            throw new IllegalArgumentException();
+        }
 
         String passwordHash = passwordHashGenerator.generateHash(userDto.password());
         User user = new User(userDto.username(), userDto.email(), passwordHash);

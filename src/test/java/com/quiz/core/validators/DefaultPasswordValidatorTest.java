@@ -4,31 +4,35 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class DefaultPasswordValidatorTest
 {
     private final PasswordValidator passwordValidator = new DefaultPasswordValidator();
 
     @Test
-    void givenValidPassword_whenValidate_thenDoNothing()
+    void givenValidPassword_whenValidate_thenTrue()
     {
         String validPassword = "password";
-        passwordValidator.validate(validPassword);
+        boolean validated = passwordValidator.validate(validPassword);
+
+        assertThat(validated).isTrue();
     }
 
     @Test
-    void givenNullPassword_whenValidate_thenNullPointerException()
+    void givenNullPassword_whenValidate_thenFalse()
     {
-        assertThatThrownBy(() -> passwordValidator.validate(null))
-                .isInstanceOf(NullPointerException.class);
+        boolean validated = passwordValidator.validate(null);
+
+        assertThat(validated).isFalse();
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"", "1", "22", "333", "4444", "55555", "666666", "7777777"})
-    void givenInvalidPasswordTooShort_whenValidate_thenIllegalArgumentException(String invalidShortPassword)
+    void givenInvalidPasswordTooShort_whenValidate_thenFalse(String invalidShortPassword)
     {
-        assertThatThrownBy(() -> passwordValidator.validate(invalidShortPassword))
-                .isInstanceOf(IllegalArgumentException.class);
+        boolean validated = passwordValidator.validate(invalidShortPassword);
+
+        assertThat(validated).isFalse();
     }
 }

@@ -1,6 +1,9 @@
 package com.quiz.core.validators;
 
-public interface PasswordValidator
+import com.quiz.core.entities.validators.ValidPassword;
+import jakarta.validation.ConstraintValidator;
+
+public interface PasswordValidator extends ConstraintValidator<ValidPassword, String>
 {
-    void validate(String password);
+    boolean validate(String password);
 }

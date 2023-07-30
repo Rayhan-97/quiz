@@ -1,11 +1,11 @@
 package com.quiz.services;
 
-import com.quiz.services.dtos.UserDto;
 import com.quiz.core.entities.User;
 import com.quiz.core.repositories.UserRepository;
 import com.quiz.core.validators.EmailValidator;
 import com.quiz.core.validators.PasswordValidator;
 import com.quiz.core.validators.UsernameValidator;
+import com.quiz.services.dtos.UserDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,6 +38,7 @@ class DefaultUserServiceTest
     {
         when(emailValidator.validate(anyString())).thenReturn(true);
         when(usernameValidator.validate(anyString())).thenReturn(true);
+        when(passwordValidator.validate(anyString())).thenReturn(true);
     }
 
     @Test
@@ -78,7 +79,7 @@ class DefaultUserServiceTest
         String invalidPassword = "invalid";
         UserDto userDto = new UserDto("username", "email", invalidPassword);
 
-        doThrow(IllegalArgumentException.class).when(passwordValidator).validate(invalidPassword);
+        when(passwordValidator.validate(invalidPassword)).thenReturn(false);
 
         Assertions.assertThatThrownBy(() -> userService.registerNewUser(userDto))
                 .isInstanceOf(IllegalArgumentException.class);

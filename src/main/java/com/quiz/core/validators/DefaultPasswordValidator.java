@@ -1,8 +1,7 @@
 package com.quiz.core.validators;
 
+import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 @Service
 public class DefaultPasswordValidator implements PasswordValidator
@@ -10,13 +9,14 @@ public class DefaultPasswordValidator implements PasswordValidator
     public static final int MINIMUM_PASSWORD_LENGTH = 8;
 
     @Override
-    public void validate(String password)
+    public boolean validate(String password)
     {
-        Objects.requireNonNull(password);
+        return password != null && password.length() >= MINIMUM_PASSWORD_LENGTH;
+    }
 
-        if (password.length() < MINIMUM_PASSWORD_LENGTH)
-        {
-            throw new IllegalArgumentException("Password is too short");
-        }
+    @Override
+    public boolean isValid(String value, ConstraintValidatorContext context)
+    {
+        return validate(value);
     }
 }
