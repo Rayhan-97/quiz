@@ -4,24 +4,27 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class DefaultUsernameValidatorTest
 {
     private final UsernameValidator usernameValidator = new DefaultUsernameValidator();
 
     @Test
-    void givenValidUsername_whenValidate_thenDoNothing()
+    void givenValidUsername_whenValidate_thenTrue()
     {
         String validUsername = "a123-_";
-        usernameValidator.validate(validUsername);
+        boolean validated = usernameValidator.validate(validUsername);
+
+        assertThat(validated).isTrue();
     }
 
     @Test
-    void givenNullUsername_whenValidate_thenNullPointerException()
+    void givenNullUsername_whenValidate_thenFalse()
     {
-        assertThatThrownBy(() -> usernameValidator.validate(null))
-                .isInstanceOf(NullPointerException.class);
+        boolean validated = usernameValidator.validate(null);
+
+        assertThat(validated).isFalse();
     }
 
     @ParameterizedTest
@@ -37,9 +40,10 @@ class DefaultUsernameValidatorTest
             "%",
             "12345",
     })
-    void givenInvalidUsername_whenValidate_thenIllegalArgumentException(String invalidUsername)
+    void givenInvalidUsername_whenValidate_thenFalse(String invalidUsername)
     {
-        assertThatThrownBy(() -> usernameValidator.validate(invalidUsername))
-                .isInstanceOf(IllegalArgumentException.class);
+        boolean validated = usernameValidator.validate(invalidUsername);
+
+        assertThat(validated).isFalse();
     }
 }

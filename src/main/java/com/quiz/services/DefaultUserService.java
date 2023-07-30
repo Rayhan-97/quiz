@@ -15,8 +15,8 @@ public class DefaultUserService implements UserService
     private final UserRepository userRepository;
     private final PasswordHashGenerator passwordHashGenerator;
     private final UsernameValidator usernameValidator;
-    private final PasswordValidator passwordValidator;
     private final EmailValidator emailValidator;
+    private final PasswordValidator passwordValidator;
 
     @Autowired
     public DefaultUserService(UserRepository userRepository,
@@ -40,12 +40,15 @@ public class DefaultUserService implements UserService
             throw new UserAlreadyExistsException(newUserDto.email());
         }
 
-        usernameValidator.validate(newUserDto.username());
-        passwordValidator.validate(newUserDto.password());
+        if (!usernameValidator.validate(newUserDto.username()))
+        {
+            throw new IllegalArgumentException();
+        }
         if (!emailValidator.validate(newUserDto.email()))
         {
             throw new IllegalArgumentException();
         }
+        passwordValidator.validate(newUserDto.password());
 
         User user = new User();
         user.setUsername(newUserDto.username());

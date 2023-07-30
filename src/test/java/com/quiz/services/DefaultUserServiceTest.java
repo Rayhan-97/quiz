@@ -37,6 +37,7 @@ class DefaultUserServiceTest
     void setup()
     {
         when(emailValidator.validate(anyString())).thenReturn(true);
+        when(usernameValidator.validate(anyString())).thenReturn(true);
     }
 
     @Test
@@ -93,7 +94,7 @@ class DefaultUserServiceTest
         String invalidUsername = "invalid";
         NewUserDto newUserDto = new NewUserDto(invalidUsername, "email", "password");
 
-        doThrow(IllegalArgumentException.class).when(usernameValidator).validate(invalidUsername);
+        when(usernameValidator.validate(invalidUsername)).thenReturn(false);
 
         Assertions.assertThatThrownBy(() -> userService.registerNewUser(newUserDto))
                 .isInstanceOf(IllegalArgumentException.class);

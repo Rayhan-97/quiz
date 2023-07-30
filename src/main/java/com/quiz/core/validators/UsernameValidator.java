@@ -1,6 +1,9 @@
 package com.quiz.core.validators;
 
-public interface UsernameValidator
+import com.quiz.core.entities.validators.ValidUsername;
+import jakarta.validation.ConstraintValidator;
+
+public interface UsernameValidator extends ConstraintValidator<ValidUsername, String>
 {
-    void validate(String username);
+    boolean validate(String username);
 }

@@ -1,23 +1,32 @@
 package com.quiz.core.validators;
 
-import java.util.Objects;
+import jakarta.validation.ConstraintValidatorContext;
+import org.springframework.stereotype.Service;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Service
 public class DefaultUsernameValidator implements UsernameValidator
 {
-    private static final String USERNAME_PATTERN_REGEX = "^[_A-Za-z0-9-]{6,}$";
-    private static final Pattern USERNAME_PATTERN = Pattern.compile(USERNAME_PATTERN_REGEX);
+    private static final Pattern USERNAME_PATTERN = Pattern.compile("^[_A-Za-z0-9-]{6,}$");
 
     @Override
-    public void validate(String username)
+    public boolean validate(String username)
     {
-        Objects.requireNonNull(username);
+        if (username == null)
+        {
+            return false;
+        }
 
         Matcher matcher = USERNAME_PATTERN.matcher(username);
-        if (!matcher.matches())
-        {
-            throw new IllegalArgumentException("Invalid username");
-        }
+
+        return matcher.matches();
+    }
+
+    @Override
+    public boolean isValid(String value, ConstraintValidatorContext context)
+    {
+        return validate(value);
     }
 }
