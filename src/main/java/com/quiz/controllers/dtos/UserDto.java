@@ -10,4 +10,8 @@ public record UserDto(
         @ValidPassword String password
 )
 {
+    public com.quiz.services.dtos.UserDto convert()
+    {
+        return new com.quiz.services.dtos.UserDto(username, email, password);
+    }
 }
