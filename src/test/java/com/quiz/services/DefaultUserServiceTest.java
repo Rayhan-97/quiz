@@ -2,12 +2,8 @@ package com.quiz.services;
 
 import com.quiz.core.entities.User;
 import com.quiz.core.repositories.UserRepository;
-import com.quiz.core.validators.EmailValidator;
-import com.quiz.core.validators.PasswordValidator;
-import com.quiz.core.validators.UsernameValidator;
 import com.quiz.services.dtos.UserDto;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -18,27 +14,13 @@ class DefaultUserServiceTest
 {
     private final UserRepository userRepository;
     private final PasswordHashGenerator passwordHashGenerator;
-    private final UsernameValidator usernameValidator;
-    private final PasswordValidator passwordValidator;
-    private final EmailValidator emailValidator;
     private final UserService userService;
 
     DefaultUserServiceTest()
     {
         userRepository = mock(UserRepository.class);
         passwordHashGenerator = mock(PasswordHashGenerator.class);
-        usernameValidator = mock(UsernameValidator.class);
-        passwordValidator = mock(PasswordValidator.class);
-        emailValidator = mock(EmailValidator.class);
-        userService = new DefaultUserService(userRepository, passwordHashGenerator, usernameValidator, passwordValidator, emailValidator);
-    }
-
-    @BeforeEach
-    void setup()
-    {
-        when(emailValidator.validate(anyString())).thenReturn(true);
-        when(usernameValidator.validate(anyString())).thenReturn(true);
-        when(passwordValidator.validate(anyString())).thenReturn(true);
+        userService = new DefaultUserService(userRepository, passwordHashGenerator);
     }
 
     @Test
@@ -71,41 +53,5 @@ class DefaultUserServiceTest
 
         Assertions.assertThatThrownBy(() -> userService.registerNewUser(userDto))
                 .isInstanceOf(UserService.UserAlreadyExistsException.class);
-    }
-
-    @Test
-    public void givenNewUserWithInvalidPassword_whenRegister_thenIllegalArgumentException()
-    {
-        String invalidPassword = "invalid";
-        UserDto userDto = new UserDto("username", "email", invalidPassword);
-
-        when(passwordValidator.validate(invalidPassword)).thenReturn(false);
-
-        Assertions.assertThatThrownBy(() -> userService.registerNewUser(userDto))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    public void givenNewUserWithInvalidUsername_whenRegister_thenIllegalArgumentException()
-    {
-        String invalidUsername = "invalid";
-        UserDto userDto = new UserDto(invalidUsername, "email", "password");
-
-        when(usernameValidator.validate(invalidUsername)).thenReturn(false);
-
-        Assertions.assertThatThrownBy(() -> userService.registerNewUser(userDto))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    public void givenNewUserWithInvalidEmail_whenRegister_thenIllegalArgumentException()
-    {
-        String invalidEmail = "invalid";
-        UserDto userDto = new UserDto("username", invalidEmail, "password");
-
-        when(emailValidator.validate(invalidEmail)).thenReturn(false);
-
-        Assertions.assertThatThrownBy(() -> userService.registerNewUser(userDto))
-                .isInstanceOf(IllegalArgumentException.class);
     }
 }
