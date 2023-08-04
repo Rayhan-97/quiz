@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
 @Service
 public class DefaultEmailValidator implements EmailValidator
 {
-    private static final String EMAIL_PATTERN_REGEX = "^[_A-Za-z0-9-+]+(.[_A-Za-z0-9-]+)*@" +
-                                                      "[A-Za-z0-9-]+(.[A-Za-z0-9]+)*(.[A-Za-z]{2,})$";
+    private static final String EMAIL_PATTERN_REGEX = "^[_A-Za-z0-9-+]+(\\.[_A-Za-z0-9-]+)*@" +
+                                                      "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_PATTERN_REGEX);
 
     @Override

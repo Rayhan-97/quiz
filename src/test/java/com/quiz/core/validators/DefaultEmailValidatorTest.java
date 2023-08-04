@@ -9,10 +9,16 @@ class DefaultEmailValidatorTest
 {
     private final EmailValidator emailValidator = new DefaultEmailValidator();
 
-    @Test
-    void givenValidEmail_whenValidate_thenTrue()
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "username@domain.com",
+            "user.name@domain.com",
+            "user-name@domain.com",
+            "username@domain.co.in",
+            "user_name@domain.com"
+    })
+    void givenValidEmail_whenValidate_thenTrue(String validEmail)
     {
-        String validEmail = "valid@email.com";
         boolean validated = emailValidator.validate(validEmail);
 
         Assertions.assertThat(validated).isTrue();
@@ -37,6 +43,10 @@ class DefaultEmailValidatorTest
             "a@a.a",
             "*@a.co",
             "a@*.co",
+            "username.@domain.com",
+            ".user.name@domain.com",
+            "user-name@domain.com.",
+            "username@.com"
     })
     void givenInvalidEmail_whenValidate_thenFalse(String invalidEmail)
     {
