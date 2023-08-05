@@ -6,12 +6,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class DefaultPasswordValidator implements PasswordValidator
 {
-    public static final int MINIMUM_PASSWORD_LENGTH = 8;
+    private static final int MINIMUM_PASSWORD_LENGTH = 8;
+    private static final int MAXIMUM_PASSWORD_LENGTH = 128;
 
     @Override
     public boolean validate(String password)
     {
-        return password != null && password.length() >= MINIMUM_PASSWORD_LENGTH;
+        return password != null && password.length() >= MINIMUM_PASSWORD_LENGTH && password.length() < MAXIMUM_PASSWORD_LENGTH;
     }
 
     @Override

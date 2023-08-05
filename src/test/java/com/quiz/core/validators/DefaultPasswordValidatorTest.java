@@ -2,9 +2,13 @@ package com.quiz.core.validators;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class DefaultPasswordValidatorTest
 {
@@ -28,11 +32,27 @@ class DefaultPasswordValidatorTest
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"", "1", "22", "333", "4444", "55555", "666666", "7777777"})
+    @MethodSource("invalidStrings")
     void givenInvalidPasswordTooShort_whenValidate_thenFalse(String invalidShortPassword)
     {
         boolean validated = passwordValidator.validate(invalidShortPassword);
 
         assertThat(validated).isFalse();
+    }
+
+    private static Stream<Arguments> invalidStrings()
+    {
+        return Stream.of(
+                null,
+                arguments(""),
+                arguments("1"),
+                arguments("22"),
+                arguments("333"),
+                arguments("4444"),
+                arguments("55555"),
+                arguments("666666"),
+                arguments("7777777"),
+                arguments("a".repeat(128))
+        );
     }
 }

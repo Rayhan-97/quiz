@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 @Service
 public class DefaultUsernameValidator implements UsernameValidator
 {
-    private static final Pattern USERNAME_PATTERN = Pattern.compile("^[_A-Za-z0-9-]{6,}$");
+    private static final Pattern USERNAME_PATTERN = Pattern.compile("^[_A-Za-z0-9-]{6,32}$");
 
     @Override
     public boolean validate(String username)
