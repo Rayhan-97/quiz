@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "baseUrl": "./",
+      "allowJs": true,
+      "checkJs": true,
+      "noEmit": true,
+      "strict": false,
+      "esModuleInterop": true,
+      "target": "esnext",
+      "types": ["cypress", "node"]
+    },
+    "include": ["**/*.ts", "cypress/support/*.ts", "index.js"]
+  }
+  

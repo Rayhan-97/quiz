@@ -1,0 +1,19 @@
+version: '3'
+services:
+  cypress:
+    image: cypress-arm64
+    volumes:
+      - ./:/e2e
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    working_dir: /e2e
+    container_name: cypress
+    environment:
+      - CYPRESS_baseUrl=http://host.docker.internal:3000
+      # get the IP address of the host machine and allow X11 to accept
+      # incoming connections from that IP address
+      #   IP=$(ipconfig getifaddr en0)
+      #   /usr/X11/bin/xhost + $IP
+      # then pass the environment variable DISPLAY to show Cypress GUI on the host system
+      #   DISPLAY=$IP:0
+      - DISPLAY
+    entrypoint: cypress open --project /e2e
