@@ -7,7 +7,7 @@
       "strict": false,
       "esModuleInterop": true,
       "target": "esnext",
-      "types": ["cypress", "node"]
+      "types": ["cypress", "node", "jquery"]
     },
     "include": ["**/*.ts", "cypress/support/*.ts", "index.js"]
   }

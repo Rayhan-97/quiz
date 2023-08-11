@@ -7,7 +7,8 @@ import * as Yup from "yup";
 import { isValidEmail, isValidPassword, isValidUsername } from "../util/registerValidator";
 import capitalize from "../util/stringUtils";
 
-const REGISTER_ENDPOINT = "http://localhost:8080/register";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL ?? "http://localhost:8080"
+const REGISTER_ENDPOINT = `${BACKEND_URL}/register`;
 
 interface RegisterFormValues {
   username: string,
@@ -209,7 +210,6 @@ const LoadingSpinner = ({ dataCyPrefix }: { dataCyPrefix?: string }): JSX.Elemen
 
   return (
     <>
-      {/* <div data-cy={`${dataCyPrefix}loading-spinner`}>loading</div> */}
       <Spinner
         data-cy={`${dataCyPrefix}loading-spinner`}
         animation="border"
