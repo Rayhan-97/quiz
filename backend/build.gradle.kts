@@ -62,6 +62,7 @@ subprojects {
 dependencies {
 	implementation(project("core-domain"))
 	implementation(project("infrastructure"))
+	implementation(project("interface"))
 
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-data-rest")
