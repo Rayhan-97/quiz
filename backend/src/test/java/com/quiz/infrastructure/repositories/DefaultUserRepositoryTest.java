@@ -1,6 +1,8 @@
-package com.quiz.core.repositories;
+package com.quiz.infrastructure.repositories;
 
 import com.quiz.core.entities.User;
+import com.quiz.core.repositories.UserRepository;
+import com.quiz.repositories.DefaultUserRepository;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
-@ContextConfiguration(classes = UserRepository.class)
-@EnableJpaRepositories(basePackageClasses = UserRepository.class)
+@ContextConfiguration(classes = DefaultUserRepository.class)
+@EnableJpaRepositories(basePackageClasses = DefaultUserRepository.class)
 @EntityScan(basePackages = "com.quiz")
-class UserRepositoryTest
+class DefaultUserRepositoryTest
 {
     @Autowired
     private TestEntityManager testEntityManager;
