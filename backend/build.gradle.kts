@@ -4,6 +4,7 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.1.1"
 	id("io.spring.dependency-management") version "1.1.0"
+	id("com.bmuschko.docker-remote-api") version "6.0.0"
 }
 
 group = "com.quiz"
@@ -64,4 +65,14 @@ dependencies {
 
 springBoot {
 	mainClass = "com.quiz.launch.Application"
+}
+
+tasks.register<Exec>("buildDockerImage") {
+	dependsOn(tasks.named("bootJar"))
+
+	// Set the command to build the Docker image
+	commandLine("docker-buildx", "build", "-t", "backend", ".")
+
+	// Set the working directory where the Dockerfile is located
+	workingDir(file(project.projectDir, PathValidation.DIRECTORY))
 }
