@@ -1,21 +1,13 @@
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 plugins {
 	java
 	id("org.springframework.boot") version "3.1.1"
 	id("io.spring.dependency-management") version "1.1.0"
 }
 
-group = "com.example"
+group = "com.quiz"
 version = "0.0.1-SNAPSHOT"
-
-java {
-	sourceCompatibility = JavaVersion.VERSION_17
-}
-
-configurations {
-	compileOnly {
-		extendsFrom(configurations.annotationProcessor.get())
-	}
-}
 
 repositories {
 	mavenCentral()
@@ -57,33 +49,19 @@ subprojects {
 	tasks.withType<Test> {
 		useJUnitPlatform()
 	}
+
+	tasks.named<BootJar>("bootJar") {
+		enabled = false // Disable the bootJar task for subprojects
+	}
 }
 
 dependencies {
 	implementation(project("core-domain"))
 	implementation(project("infrastructure"))
 	implementation(project("interface"))
-
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-data-rest")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("org.springframework.boot:spring-boot-starter-validation")
-	implementation("org.springframework.boot:spring-boot-starter-actuator")
-
-	compileOnly("org.projectlombok:lombok")
-
-	runtimeOnly("com.h2database:h2")
-
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
-
-	annotationProcessor("org.projectlombok:lombok")
-
-	testImplementation("org.mockito:mockito-core:5.4.0")
-	testImplementation("org.assertj:assertj-core:3.24.2")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	implementation(project("launch"))
 }
 
-tasks.withType<Test> {
-	
-	useJUnitPlatform()
+springBoot {
+	mainClass = "com.quiz.launch.Application"
 }

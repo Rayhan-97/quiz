@@ -5,6 +5,7 @@ include(
         "backend:core-domain",
         "backend:infrastructure",
         "backend:interface",
+        "backend:launch",
         "frontend-react",
         "tests-cypress",
 )
