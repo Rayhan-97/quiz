@@ -1,0 +1,18 @@
+management:
+  endpoints:
+    web:
+      cors:
+        allowed-origins:
+          - "http://localhost:19000"
+        allowed-methods:
+          - "GET"
+          - "POST"
+
+spring:
+  h2:
+    console:
+      enabled: true
+  jpa:
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
