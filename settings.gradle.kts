@@ -8,4 +8,5 @@ include(
         "backend:launch",
         "frontend-react",
         "tests-cypress",
+        "tests-backend-integration",
 )
