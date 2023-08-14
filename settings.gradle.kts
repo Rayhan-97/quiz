@@ -1,2 +1,7 @@
 rootProject.name = "quiz"
-include("backend")
+
+include(
+        "backend",
+        "frontend-react",
+        "tests-cypress",
+)
