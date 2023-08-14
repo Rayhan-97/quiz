@@ -1,4 +1,4 @@
-package com.quiz.repositories;
+package com.quiz.infrastructure.repositories;
 
 import com.quiz.core.entities.User;
 import com.quiz.core.repositories.UserRepository;

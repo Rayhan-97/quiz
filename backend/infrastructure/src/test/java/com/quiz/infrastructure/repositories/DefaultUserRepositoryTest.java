@@ -2,7 +2,6 @@ package com.quiz.infrastructure.repositories;
 
 import com.quiz.core.entities.User;
 import com.quiz.core.repositories.UserRepository;
-import com.quiz.repositories.DefaultUserRepository;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
