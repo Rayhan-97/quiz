@@ -44,8 +44,8 @@ jobs:
         with:
           working-directory: ./tests-cypress
         env:
-          CYPRESS_BACKEND_URL: http://172.23.0.2:8080
-          CYPRESS_baseUrl: http://172.23.0.3:3000
+          CYPRESS_BACKEND_URL: http://backend:8080
+          CYPRESS_baseUrl: http://frontend:3000
 
       - name: Stop and Remove Frontend Docker Container
         if: always()
