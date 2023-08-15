@@ -29,7 +29,8 @@ jobs:
         uses: gradle/gradle-build-action@v2
       
       - name: Start Backend Server in Docker
-        run: ./gradlew :backend:bootRun
+        run: ./gradlew :backend:bootJar
+      - run: java -jar /backend/build/libs/*.jar &
 
       - name: Start Frontend Server in Docker
         working-directory: ./frontend-react
