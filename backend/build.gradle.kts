@@ -76,3 +76,9 @@ tasks.register<Exec>("buildDockerImage") {
 	// Set the working directory where the Dockerfile is located
 	workingDir(file(project.projectDir, PathValidation.DIRECTORY))
 }
+
+tasks.withType<Test> {
+	subprojects.forEach {
+		dependsOn(it.tasks.withType<Test>())
+	}
+}
