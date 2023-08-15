@@ -7,6 +7,8 @@ services:
     networks:
       cypress-network:
         ipv4_address: 172.23.0.2
+    ports:
+      - "40000:8080"
 
 networks:
   cypress-network:

@@ -7,6 +7,8 @@ services:
     networks:
       cypress-network:
         ipv4_address: 172.23.0.3
+    ports:
+      - "40001:3000"
     environment:
       - REACT_APP_BACKEND_URL=http://backend:8080
     working_dir: /frontend
