@@ -33,11 +33,11 @@ jobs:
       
       - name: Start Backend Server in Docker
         working-directory: ./backend
-        run: docker-compose up -d
+        run: docker-compose --network ${{ job.container.network }} up -d
 
       - name: Start Frontend Server in Docker
         working-directory: ./frontend-react
-        run: docker-compose up -d
+        run: docker-compose --network ${{ job.container.network }} up -d
 
       - name: Cypress Run e2e Tests
         uses: cypress-io/github-action@v5
