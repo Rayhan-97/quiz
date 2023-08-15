@@ -30,7 +30,7 @@ jobs:
       
       - name: Start Backend Server in Docker
         working-directory: ./backend
-        run: gradle bootRun
+        run: ./gradlew bootRun
 
       - name: Start Frontend Server in Docker
         working-directory: ./frontend-react
