@@ -33,11 +33,13 @@ jobs:
       
       - name: Start Backend Server in Docker
         working-directory: ./backend
-        run: docker-compose --network ${{ job.container.network }} up -d
+        run: docker-compose up -d
+      - run: docker network connect ${{ job.container.network }} backend
 
       - name: Start Frontend Server in Docker
         working-directory: ./frontend-react
-        run: docker-compose --network ${{ job.container.network }} up -d
+        run: docker-compose up -d
+      - run: docker network connect ${{ job.container.network }} frontend
 
       - name: Cypress Run e2e Tests
         uses: cypress-io/github-action@v5
@@ -50,12 +52,14 @@ jobs:
       - name: Stop and Remove Frontend Docker Container
         if: always()
         working-directory: ./frontend-react
-        run: docker-compose down
+        run: docker network disconnect ${{ job.container.network }} frontend
+      - run: docker-compose down
       
       - name: Stop and Remove Backend Docker Container
         if: always()
         working-directory: ./backend
-        run: docker-compose down
+        run: docker network disconnect ${{ job.container.network }} backend
+      - run: docker-compose down
       
       - name: Upload Screenshot Artifacts
         uses: actions/upload-artifact@v3
