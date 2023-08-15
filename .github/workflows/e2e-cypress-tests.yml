@@ -48,10 +48,12 @@ jobs:
           CYPRESS_baseUrl: http://172.23.0.3:3000
 
       - name: Stop and Remove Frontend Docker Container
+        if: always()
         working-directory: ./frontend-react
         run: docker-compose down
       
       - name: Stop and Remove Backend Docker Container
+        if: always()
         working-directory: ./backend
         run: docker-compose down
       
