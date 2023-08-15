@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    container: cypress/browsers:node16.16.0-chrome107-ff107-edge
+    container: cypress/included:9.4.1
     steps:
       - name: Install Docker Compose
         run: |
