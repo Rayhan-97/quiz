@@ -35,9 +35,6 @@ jobs:
       - name: Install Dependencies
         working-directory: ./frontend-react
         run: npm ci
-      - name: Build Frontend
-        working-directory: ./frontend-react
-        run: npm run build
       - name: Start Frontend Server
         working-directory: ./frontend-react
         run: npm run start
