@@ -12,7 +12,8 @@ jobs:
     container: cypress/included:9.4.1
     steps:
       - name: Get Host IP
-        run: echo "HOST_IP=$(ip route | grep default | awk '{print $3}')" >> $GITHUB_ENV
+        id: host_ip
+        run: echo "::set-output name=host_ip::$(ip route | grep default | awk '{print $3}')"
 
       - name: Install Docker Compose
         run: |
@@ -47,8 +48,8 @@ jobs:
         with:
           working-directory: ./tests-cypress
         env:
-          CYPRESS_BACKEND_URL: http://$HOST_IP:40000
-          CYPRESS_baseUrl: http://$HOST_IP:40001
+          CYPRESS_BACKEND_URL: http://${{ steps.host_ip.outputs.host_ip }}:40000
+          CYPRESS_baseUrl: http://${{ steps.host_ip.outputs.host_ip }}:40001
 
       - name: Stop and Remove Frontend Docker Container
         if: always()
