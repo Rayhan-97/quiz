@@ -14,16 +14,6 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Cache Dependencies and Setup
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: cache-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: |
-          cache-${{ runner.os }}-
-
     - name: Set Up JDK
       uses: actions/setup-java@v3
       with:
