@@ -37,10 +37,10 @@ jobs:
         run: npm ci
       - name: Build Frontend
         working-directory: ./frontend-react
-        run: npm build
+        run: npm run build
       - name: Start Frontend Server
         working-directory: ./frontend-react
-        run: npm start
+        run: npm run start
 
       - name: Cypress Run e2e Tests
         uses: cypress-io/github-action@v5
