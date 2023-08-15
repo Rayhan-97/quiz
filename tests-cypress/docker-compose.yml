@@ -1,27 +1,14 @@
 version: '3'
 services:
-  frontend: 
-    image: frontend
-    container_name: frontend
-    environment:
-      - REACT_APP_BACKEND_URL=http://backend:8080
-    working_dir: /frontend
-    volumes:
-      - /Users/rayhan.khan/vcs/quiz/frontend-react:/frontend
-    entrypoint: "npm"
-    command: ["start"]
-
-  backend:
-    image: backend 
-    container_name: backend
-
   cypress:
     image: cypress-arm64
     volumes:
-      - ./:/e2e
+      - .:/e2e
       - /tmp/.X11-unix:/tmp/.X11-unix
     working_dir: /e2e
     container_name: cypress
+    networks:
+      - cypress-network
     environment:
       - CYPRESS_baseUrl=http://frontend:3000
       - CYPRESS_BACKEND_URL=http://backend:8080
@@ -33,3 +20,7 @@ services:
       #   DISPLAY=$IP:0
       - DISPLAY
     entrypoint: cypress open --project /e2e
+
+networks:
+  cypress-network:
+    external: true

@@ -1,0 +1,20 @@
+version: '3'
+services:
+  frontend:
+    build: .
+    image: frontend
+    container_name: frontend
+    networks:
+      cypress-network:
+        ipv4_address: 172.23.0.3
+    environment:
+      - REACT_APP_BACKEND_URL=http://backend:8080
+    working_dir: /frontend
+    volumes:
+      - .:/frontend
+    entrypoint: "npm"
+    command: ["start"]
+
+networks:
+  cypress-network:
+    external: true

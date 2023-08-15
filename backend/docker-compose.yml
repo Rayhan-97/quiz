@@ -1,0 +1,18 @@
+version: '3'
+services:
+  backend:
+    build: .
+    image: backend 
+    container_name: backend
+    networks:
+      cypress-network:
+        ipv4_address: 172.23.0.2
+
+networks:
+  cypress-network:
+    name: 'cypress-network'
+    driver: 'bridge'
+    ipam:
+      config:
+        - subnet: 172.23.0.0/16
+          gateway: 172.23.0.1
