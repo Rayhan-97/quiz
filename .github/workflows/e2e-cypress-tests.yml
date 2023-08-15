@@ -1,0 +1,57 @@
+name: Cypress Tests
+
+on:
+  push:
+    branches: 
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    container: cypress/browsers:node16.16.0-chrome107-ff107-edge
+    steps:
+      - name: Install Docker Compose
+        run: |
+          curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Start Backend Server in Docker
+        working-directory: ./backend
+        run: docker-compose up -d
+
+      - name: Start Frontend Server in Docker
+        working-directory: ./frontend-react
+        run: docker-compose up -d
+
+      - name: Cypress Run e2e Tests
+        uses: cypress-io/github-action@v5
+        with:
+          working-directory: ./tests-cypress
+        env:
+          CYPRESS_BACKEND_URL: http://172.23.0.2:8080
+          CYPRESS_baseUrl: http://172.23.0.3:3000
+
+      - name: Stop and Remove Frontend Docker Container
+        working-directory: ./frontend-react
+        run: docker-compose down
+      
+      - name: Stop and Remove Backend Docker Container
+        working-directory: ./backend
+        run: docker-compose down
+      
+      - name: Upload Screenshot Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+            name: cypress-screenshots
+            path: cypress/screenshots
+            # if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
+      - name: Upload Video Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: cypress-videos
+          path: cypress/videos
+          # if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
