@@ -1,4 +1,5 @@
-FROM arm64v8/openjdk:17-ea-16-jdk
+#FROM arm64v8/openjdk:17-ea-16-jdk # for local
+FROM eclipse-temurin:17
 
 VOLUME /tmp
 
