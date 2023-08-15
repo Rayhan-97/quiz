@@ -35,7 +35,7 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           working-directory: ./tests-cypress
-          start: (cd ../frontend-react && npm run start &)
+          start: cd ../frontend-react && npm run start &
         env:
           CYPRESS_BACKEND_URL: "http://localhost:8080"
           CYPRESS_baseUrl: "http://localhost:3000"
