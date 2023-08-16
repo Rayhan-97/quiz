@@ -29,7 +29,7 @@ jobs:
 
       - name: Install Frontend Dependencies
         working-directory: ./frontend-react
-        run: npm ci
+        run: npm install
 
       - name: Cypress Run e2e Tests
         uses: cypress-io/github-action@v5
