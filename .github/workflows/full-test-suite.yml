@@ -52,3 +52,67 @@ jobs:
       
       - name: Run Frontend Unit Tests
         run: npm test
+  
+
+  cypress_tests:
+    name: Cypress Tests
+    needs: 
+      - backend_tests
+      - frontend_unit_tests
+
+    runs-on: ubuntu-latest
+
+    container: cypress/included:9.4.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'zulu'
+      
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+      
+      - name: Start Backend Server
+        run: ./gradlew :backend:bootJar
+      - run: java -jar backend/build/libs/backend-0.0.1-SNAPSHOT.jar &
+
+      - name: Install Frontend Dependencies
+        working-directory: ./frontend-react
+        run: npm install
+      - name: Install pm2 runner
+        working-directory: ./frontend-react
+        run: npm install pm2 -g    
+      
+      - name: Start Frontend Server
+        working-directory: ./frontend-react
+        run: pm2 start --name frontend npm -- start 
+
+      - name: Run Cypress Tests
+        uses: cypress-io/github-action@v5
+        with:
+          working-directory: ./tests-cypress
+          wait-on: "http://localhost:8080, http://localhost:3000"
+        env:
+          CYPRESS_BACKEND_URL: "http://localhost:8080"
+          CYPRESS_baseUrl: "http://localhost:3000"
+      
+      - name: Stop Frontend Server
+        if: always()
+        run: pm2 stop frontend 
+
+      - name: Upload Screenshot Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+            name: cypress-screenshots
+            path: tests-cypress/cypress/screenshots
+            if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
+      - name: Upload Video Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: cypress-videos
+          path: tests-cypress/cypress/videos
+          if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
