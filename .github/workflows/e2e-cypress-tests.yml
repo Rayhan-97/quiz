@@ -36,6 +36,8 @@ jobs:
         with:
           working-directory: ./frontend-react
           start: npm run start
+          wait-on: "http://localhost:8080, http://localhost:3000"
+          wait-for-timeout: 120
         env:
           CYPRESS_BACKEND_URL: "http://localhost:8080"
           CYPRESS_baseUrl: "http://localhost:3000"
