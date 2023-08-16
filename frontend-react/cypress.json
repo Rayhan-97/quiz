@@ -1,0 +1,8 @@
+{
+    "baseUrl": "http://localhost:3000",
+    "integrationFolder": "../tests-cypress/cypress/e2e",
+    "screenshotsFolder": "../tests-cypress/cypress/screenshots",
+    "videosFolder": "../tests-cypress/cypress/videos",
+    "fixturesFolder": "../tests-cypress/cypress/fixtures",
+    "supportFile": "../tests-cypress/cypress/support/custom-commands.ts"
+}
