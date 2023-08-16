@@ -50,7 +50,6 @@
     "@testing-library/react": "^14.0.0",
     "@types/jest": "^29.5.3",
     "@types/node": "^20.4.9",
-    "cypress": "^9.4.1",    
     "jest": "^27.5.1"
   }
 }
