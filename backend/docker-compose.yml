@@ -5,10 +5,9 @@ services:
     image: backend 
     container_name: backend
     networks:
-      cypress-network:
-        ipv4_address: 172.23.0.2
-    ports:
-      - "40000:8080"
+      - cypress-network
+    environment:
+      - FRONTEND_URL=http://frontend:3000
 
 networks:
   cypress-network:
