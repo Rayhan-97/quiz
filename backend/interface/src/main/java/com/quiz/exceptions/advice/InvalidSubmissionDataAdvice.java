@@ -19,10 +19,11 @@ public class InvalidSubmissionDataAdvice
     private final List<InvalidDataSubmitHandler> invalidDataSubmitHandlers;
 
     @Autowired
-    public InvalidSubmissionDataAdvice(RegisterInvalidDataSubmitHandler registerHandler)
+    public InvalidSubmissionDataAdvice(RegisterInvalidDataSubmitHandler registerHandler, LoginInvalidDataSubmitHandler loginHandler)
     {
         this.invalidDataSubmitHandlers = List.of(
-                registerHandler
+                registerHandler,
+                loginHandler
         );
     }
 
