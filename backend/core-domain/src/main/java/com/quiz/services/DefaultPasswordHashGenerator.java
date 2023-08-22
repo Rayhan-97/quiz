@@ -20,4 +20,10 @@ public class DefaultPasswordHashGenerator implements PasswordHashGenerator
     {
         return passwordEncoder.encode(password);
     }
+
+    @Override
+    public boolean matches(String rawPassword, String encodedPassword)
+    {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
 }
