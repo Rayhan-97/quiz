@@ -37,7 +37,7 @@ class DefaultUserDetailsServiceTest
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-        assertThat(userDetails.getUsername()).isEqualTo(user.getUsername());
+        assertThat(userDetails.getUsername()).isEqualTo(user.getEmail());
         assertThat(userDetails.getPassword()).isEqualTo(user.getPasswordHash());
     }
 
