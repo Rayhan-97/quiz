@@ -92,7 +92,7 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           working-directory: ./tests-cypress
-          wait-on: "http://localhost:8080, http://localhost:3000"
+          wait-on: "http://localhost:3000"
         env:
           CYPRESS_BACKEND_URL: "http://localhost:8080"
           CYPRESS_baseUrl: "http://localhost:3000"
