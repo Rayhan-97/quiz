@@ -74,7 +74,7 @@ tasks.register<Exec>("buildDockerImage") {
 	dependsOn(tasks.named("bootJar"))
 
 	// Set the command to build the Docker image
-	commandLine("docker-buildx", "build", "-t", "backend", ".")
+	commandLine("docker", "buildx", "build", "-t", "backend", ".", "--load")
 
 	// Set the working directory where the Dockerfile is located
 	workingDir(file(project.projectDir, PathValidation.DIRECTORY))

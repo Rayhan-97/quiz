@@ -5,8 +5,7 @@ services:
     image: frontend
     container_name: frontend
     networks:
-      cypress-network:
-        ipv4_address: 172.23.0.3
+      - cypress-network
     ports:
       - "40001:3000"
     environment:

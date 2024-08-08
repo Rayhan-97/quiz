@@ -3,9 +3,9 @@ plugins {
 }
 
 tasks.register<Exec>("buildDockerImage") {
-    enabled = false
+    enabled = project.findProperty("buildCypressImage")?.toString()?.toBoolean() ?: false
     // Set the command to build the Docker image
-    commandLine("docker-buildx", "build", "-t", "cypress-arm64", ".")
+    commandLine("docker", "buildx", "build", "-t", "cypress", ".", "--load")
 
     // Set the working directory where the Dockerfile is located
     workingDir(file(project.projectDir, PathValidation.DIRECTORY))

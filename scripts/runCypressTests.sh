@@ -9,14 +9,14 @@ cleanupDockerContainers()
 
 cleanupDockerContainers > /dev/null 2>&1
 
+docker network create --driver bridge cypress-network
+
 (cd backend && docker-compose up -d)
 (cd frontend-react && docker-compose up -d)
 
-IP=$(ipconfig getifaddr en0)
-/usr/X11/bin/xhost + $IP
-DISPLAY=$IP:0
-
 cd tests-cypress
+# allow all connections for x11 forwarding from container
+xhost +local:*
 
 headless=${1:-}
 if [[ ${headless} == "--headless=true" ]]; then
@@ -26,3 +26,4 @@ else
 fi
 
 cleanupDockerContainers > /dev/null 2>&1
+xhost -local:*
