@@ -1,9 +1,10 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Register from './components/register';
+import Register from './components/Register';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Layout from './components/layout';
+import Login from './components/Login';
 
 function App() {
   return (
@@ -41,13 +42,7 @@ function App() {
   );
 }
 
-const Login = () => {
-  return (
-    <>
-      <div>Login page! Welcome!</div>
-    </>
-  )
-}
+
 
 const NotFound = () => {
   return (
