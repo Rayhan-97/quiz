@@ -1,10 +1,9 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Register from './components/Register';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import './App.css';
+import Authenticated from './components/Authenticated';
 import Layout from './components/layout';
 import Login from './components/Login';
+import Register from './components/Register';
 
 function App() {
   return (
@@ -27,13 +26,17 @@ function App() {
     </div> */}
       <BrowserRouter>
         <Routes>
-          
+
           <Route path="/" element={<Layout />} >
             <Route path="/" element={<Register />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+
+            <Route path='/' element={<Authenticated />} >
+              <Route path='make' element={<Make />} />
+            </Route>
           </Route>
-          
+
           <Route path="*" element={<NotFound />} />
 
         </Routes>
@@ -51,5 +54,7 @@ const NotFound = () => {
     </>
   )
 }
+
+const Make = () => <div>Welcome, Logged in user, welcome!</div>;
 
 export default App;

@@ -1,7 +1,8 @@
 import { Outlet, Link } from "react-router-dom";
 import PropTypes from 'prop-types';
 import { ReactNode } from "react";
-import '../sass/styles.scss';
+import '../assets/css/styles.css';
+import useAuth from "../hooks/useAuth";
 
 const Layout = () => {
   return (
@@ -16,6 +17,9 @@ const Layout = () => {
           </li>
           <li>
             <Link to="/login">Login</Link>
+          </li>
+          <li>
+            <Link to="/make">Make</Link>
           </li>
         </ul>
       </nav>

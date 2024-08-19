@@ -51,7 +51,9 @@
     "@types/jest": "^29.5.3",
     "@types/node": "^20.4.9",
     "axios": "^1.7.3",
-    "jest": "^27.5.1"
+    "clsx": "^2.1.1",
+    "jest": "^27.5.1",
+    "react-hook-form": "^7.52.2"
   },
   "jest": {
     "moduleNameMapper": {
