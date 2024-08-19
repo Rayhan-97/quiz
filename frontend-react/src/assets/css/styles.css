@@ -1,0 +1,37 @@
+.content-container {
+  display: flex;
+  justify-content: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-form-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 6px;
+  margin: 2px;
+}
+
+.form-error input {
+  border-color: red;
+}
+
+.form-label {
+  font-size: 16px;
+  font-weight: bold;
+  padding-right: 20px;
+}
+
+.errortext {
+  color: "#EB3F24";
+}
+
+/*# sourceMappingURL=styles.css.map */
