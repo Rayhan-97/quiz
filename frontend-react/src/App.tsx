@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Authenticated from './components/Authenticated';
-import Layout from './components/layout';
+import Layout from './components/Layout';
 import Login from './components/Login';
 import Register from './components/Register';
 
@@ -52,8 +52,8 @@ const NotFound = () => {
     <>
       <div>Not found page! Welcome! I guess</div>
     </>
-  )
-}
+  );
+};
 
 const Make = () => <div>Welcome, Logged in user, welcome!</div>;
 
