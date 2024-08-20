@@ -1,8 +1,7 @@
-import { Outlet, Link } from "react-router-dom";
 import PropTypes from 'prop-types';
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
+import { Link, Outlet } from 'react-router-dom';
 import '../assets/css/styles.css';
-import useAuth from "../hooks/useAuth";
 
 const Layout = () => {
   return (
@@ -28,7 +27,7 @@ const Layout = () => {
         <Outlet />
       </ContentContainer>
     </>
-  )
+  );
 };
 
 interface ContentContainerProps {
