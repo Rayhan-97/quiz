@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import Register from './Register';
+import Register from '../Register';
 
 const mockNavigate = jest.fn();
 
