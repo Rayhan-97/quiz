@@ -1,12 +1,12 @@
-import { HttpStatusCode, isAxiosError } from "axios";
+import { HttpStatusCode, isAxiosError } from 'axios';
 import clsx from 'clsx';
 import { useForm, UseFormRegisterReturn } from 'react-hook-form';
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "../api/axios";
-import useAuth from "../hooks/useAuth";
-import { EMAIL_REGEX } from "../util/registerValidator";
-import capitalize from "../util/stringUtils";
-import { Spinner } from "react-bootstrap";
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import axios from '../api/axios';
+import useAuth from '../hooks/useAuth';
+import { EMAIL_REGEX } from '../util/registerValidator';
+import capitalize from '../util/stringUtils';
+import { Spinner } from 'react-bootstrap';
 
 const LOGIN_ENDPOINT = '/login';
 
@@ -42,10 +42,10 @@ const Login = () => {
                     headers: { 'Content-Type': 'application/json' },
                     // withCredentials: true
                 }
-            )
+            );
             const token: string = response.data;
             setJwtAccessToken(token);
-            navigate(from, { replace: true })
+            navigate(from, { replace: true });
         } catch (error) {
             if (isAxiosError(error) && error.response?.status === HttpStatusCode.BadRequest) {
                 const { errorMessage }: SubmissionResponseError = error.response.data;
@@ -59,7 +59,7 @@ const Login = () => {
 
             setError('root', { message: 'Server error' });
         }
-    }
+    };
 
     return (
         <>
@@ -86,8 +86,8 @@ const Login = () => {
                 <Link to='/register'>Sign Up</Link>
             </div>
         </>
-    )
-}
+    );
+};
 
 type FormFieldType = {
     name: string;
@@ -108,7 +108,7 @@ const FormField = ({ name, fieldLabel = capitalize(name), error, register }: For
             <input data-cy={`${name}-input`} id={name} {...register} />
         </div>
     );
-}
+};
 
 const ErrorText = ({ name, errorMessage }: { name: string, errorMessage: string }): JSX.Element => {
     return (
@@ -119,7 +119,7 @@ const ErrorText = ({ name, errorMessage }: { name: string, errorMessage: string 
 };
 
 const LoadingSpinner = ({ dataCyPrefix }: { dataCyPrefix?: string }) => {
-    dataCyPrefix = dataCyPrefix ? `${dataCyPrefix}-` : ''
+    dataCyPrefix = dataCyPrefix ? `${dataCyPrefix}-` : '';
 
     return (
         <>
@@ -129,7 +129,7 @@ const LoadingSpinner = ({ dataCyPrefix }: { dataCyPrefix?: string }) => {
             />
         </>
 
-    )
-}
+    );
+};
 
 export default Login;

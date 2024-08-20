@@ -1,22 +1,22 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { AxiosError, HttpStatusCode, InternalAxiosRequestConfig } from "axios";
-import { Location, MemoryRouter } from "react-router-dom";
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { AxiosError, HttpStatusCode, InternalAxiosRequestConfig } from 'axios';
+import { Location, MemoryRouter } from 'react-router-dom';
 import axiosInstance from '../../api/axios';
-import { AuthProvider } from "../../context/AuthContext";
-import Login from "../Login";
+import { AuthProvider } from '../../context/AuthContext';
+import Login from '../Login';
 
 const mockNavigate = jest.fn();
 const mockLocation: Location = {
-    pathname: "",
+    pathname: '',
     state: undefined,
-    key: "",
-    search: "",
-    hash: ""
+    key: '',
+    search: '',
+    hash: ''
 };
 
 jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom') as any,
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockNavigate,
     useLocation: () => mockLocation
 }));
@@ -26,7 +26,7 @@ jest.mock('../../api/axios');
 describe('Login component test', () => {
     beforeEach(() => {
         renderLogin();
-    })
+    });
 
     describe('Successful login path', () => {
         it('logs in and navigates to homepage when successful login', async () => {
@@ -41,8 +41,8 @@ describe('Login component test', () => {
                 expect(axiosInstance.post).toHaveBeenCalled();
                 expect(mockNavigate).toHaveBeenCalledWith('', { replace: true });
             });
-        })
-    })
+        });
+    });
 
     describe('Loading spinner for slow submission', () => {
         it('shows loading spinner for slow submissions', async () => {
@@ -56,7 +56,7 @@ describe('Login component test', () => {
                 .mockImplementation(() => Promise.resolve(async () => {
                     await barrier;
                     return { data: 'some-token' };
-                }))
+                }));
 
             const submitButton = screen.getByTestId('submit-button');
             expect(submitButton).toBeEnabled();
@@ -76,9 +76,9 @@ describe('Login component test', () => {
                 expect(mockNavigate).toHaveBeenCalled();
                 expect(submitButton).toBeEnabled();
                 expect(submitButton).toHaveTextContent('Sign in');
-            })
-        })
-    })
+            });
+        });
+    });
 
     describe('Bad backend API responses', () => {
         it.each([
@@ -87,7 +87,7 @@ describe('Login component test', () => {
             ['Invalid email/password', buildAxiosError(HttpStatusCode.BadRequest, 'Invalid email/password')]
         ])
             ('shows error message when bad/no response from server',
-                async (errorMessage: string, axiosPostError: any) => {
+                async (errorMessage: string, axiosPostError) => {
                     userEvent.type(screen.getByTestId('email-input'), 'a@a.aa');
                     userEvent.type(screen.getByTestId('password-input'), 'badPassword');
 
@@ -99,8 +99,8 @@ describe('Login component test', () => {
 
                     const errorElement = await screen.findByText(errorMessage);
                     expect(errorElement).toHaveAttribute('data-cy', 'submit-error');
-                })
-    })
+                });
+    });
 
     it('shows server error message when no response from server', async () => {
         userEvent.type(screen.getByTestId('email-input'), 'a@a.aa');
@@ -112,10 +112,10 @@ describe('Login component test', () => {
 
         await waitFor(() => expect(axiosInstance.post).toHaveBeenCalled());
 
-        const errorMessage = 'Server error'
+        const errorMessage = 'Server error';
         const errorElement = await screen.findByText(errorMessage);
         expect(errorElement).toHaveAttribute('data-cy', 'submit-error');
-    })
+    });
 
     describe('UI validation', () => {
         it('shows required errors when login without entering any data', async () => {
@@ -124,14 +124,14 @@ describe('Login component test', () => {
             const [emailError, passwordError] = await Promise.all([
                 screen.findByTestId('email-error'),
                 screen.findByTestId('password-error')
-            ])
+            ]);
 
             expect(emailError).toBeInTheDocument();
             expect(emailError).toHaveTextContent(/email required/i);
 
             expect(passwordError).toBeInTheDocument();
             expect(passwordError).toHaveTextContent(/password required/i);
-        })
+        });
 
         it('shows invalid email error when submitting bad email', async () => {
             userEvent.type(screen.getByTestId('password-input'), 'validPassword');
@@ -145,9 +145,9 @@ describe('Login component test', () => {
 
             expect(emailError).toBeInTheDocument();
             expect(emailError).toHaveTextContent(/invalid email/i);
-        })
-    })
-})
+        });
+    });
+});
 
 const renderLogin = () => {
     return render(<Login />, {
@@ -155,7 +155,7 @@ const renderLogin = () => {
     });
 };
 
-function buildAxiosError(statusCode: HttpStatusCode, errorMessage: string): AxiosError<unknown, any> {
+function buildAxiosError(statusCode: HttpStatusCode, errorMessage: string): AxiosError<unknown> {
     return {
         response: {
             status: statusCode,
@@ -165,8 +165,8 @@ function buildAxiosError(statusCode: HttpStatusCode, errorMessage: string): Axio
             statusText: ''
         },
         isAxiosError: true,
-        toJSON: () => { throw new Error("Function not implemented.") },
-        name: "",
-        message: ""
+        toJSON: () => { throw new Error('Function not implemented.'); },
+        name: '',
+        message: ''
     };
 }
