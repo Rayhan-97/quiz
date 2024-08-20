@@ -1,5 +1,5 @@
 const USERNAME_REGEX = /^[_A-Za-z0-9-]{6,32}$/;
-const EMAIL_REGEX =
+export const EMAIL_REGEX =
   /^[_A-Za-z0-9-+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$/;
 
 export const isValidUsername = (username: string = ""): boolean => {

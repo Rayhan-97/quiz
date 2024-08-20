@@ -1,21 +1,21 @@
 import { useContext } from 'react';
 import AuthContext from '../context/AuthContext';
 
+export type AuthData = {
+    authToken: string;
+    setJwtAccessToken: (token: string) => void;
+};
 
-const useAuth = () => {
+const useAuth = (): AuthData => {
     const authContext = useContext(AuthContext);
 
     if (authContext === undefined) {
         throw new Error('Expected AuthProvider somewhere in the React tree to set context value');
     }
 
-    const setAccessToken = (token: string) => {
-        authContext.setAuth({ accessToken: token });
-    }
-
     return {
         authToken: authContext.auth.accessToken,
-        setJwtAccessToken: setAccessToken
+        setJwtAccessToken: (token: string) => authContext.setAuth({ accessToken: token })
     };
 };
 

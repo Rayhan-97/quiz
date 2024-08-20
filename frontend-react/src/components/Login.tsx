@@ -4,7 +4,9 @@ import { useForm, UseFormRegisterReturn } from 'react-hook-form';
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
+import { EMAIL_REGEX } from "../util/registerValidator";
 import capitalize from "../util/stringUtils";
+import { Spinner } from "react-bootstrap";
 
 const LOGIN_ENDPOINT = '/login';
 
@@ -28,7 +30,7 @@ const Login = () => {
         register,
         handleSubmit,
         setError,
-        formState: { errors }
+        formState: { errors, isSubmitting }
     } = useForm<FormValues>({ defaultValues: { email: '', password: '' } });
 
     const onSubmit = async ({ email, password }: FormValues) => {
@@ -41,34 +43,34 @@ const Login = () => {
                     // withCredentials: true
                 }
             )
-            const token = response.data;
+            const token: string = response.data;
             setJwtAccessToken(token);
             navigate(from, { replace: true })
         } catch (error) {
-            if (!isAxiosError(error)) {
-                throw error; // FIXME: add fallback or handle here?
-            }
-
-            const response = error.response;
-            if (!response) {
-                setError('root', { message: 'Server error' });
-            }
-            else if (response?.status === HttpStatusCode.BadRequest) {
-                const { errorMessage }: SubmissionResponseError = response.data;
+            if (isAxiosError(error) && error.response?.status === HttpStatusCode.BadRequest) {
+                const { errorMessage }: SubmissionResponseError = error.response.data;
                 setError('root', { message: errorMessage });
+                return;
             }
 
+            if (!isAxiosError(error)) {
+                console.error(error);
+            }
 
+            setError('root', { message: 'Server error' });
         }
     }
 
     return (
         <>
-            <div className={'login-form-container'}>
+            <div className={'form-container'}>
                 <form className={'form'} onSubmit={handleSubmit(onSubmit)}>
                     <FormField
                         name={'email'} error={errors.email?.message}
-                        register={register('email', { required: 'Email required' })}
+                        register={register('email', {
+                            required: 'Email required',
+                            pattern: { value: EMAIL_REGEX, message: 'Invalid email' }
+                        })}
                     />
                     <FormField
                         name={'password'} error={errors.password?.message}
@@ -77,7 +79,9 @@ const Login = () => {
 
                     {errors.root && <ErrorText name='submit' errorMessage={errors.root.message!} />}
 
-                    <button>Sign in</button>
+                    <button data-cy={'submit-button'} disabled={isSubmitting}>
+                        {isSubmitting ? <LoadingSpinner /> : 'Sign in'}
+                    </button>
                 </form>
                 <Link to='/register'>Sign Up</Link>
             </div>
@@ -113,5 +117,19 @@ const ErrorText = ({ name, errorMessage }: { name: string, errorMessage: string 
         </>
     );
 };
+
+const LoadingSpinner = ({ dataCyPrefix }: { dataCyPrefix?: string }) => {
+    dataCyPrefix = dataCyPrefix ? `${dataCyPrefix}-` : ''
+
+    return (
+        <>
+            <Spinner
+                data-cy={`${dataCyPrefix}loading-spinner`}
+                animation="border"
+            />
+        </>
+
+    )
+}
 
 export default Login;
