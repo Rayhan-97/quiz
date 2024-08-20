@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Formik, FormikProps, useField } from "formik";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { Button, Spinner } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import * as Yup from "yup";
-import { isValidEmail, isValidPassword, isValidUsername } from "../util/registerValidator";
-import capitalize from "../util/stringUtils";
+import { Formik, FormikProps, useField } from 'formik';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { Button, Spinner } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
+import { BACKEND_URL } from '../util/constants';
+import { isValidEmail, isValidPassword, isValidUsername } from '../util/registerValidator';
+import capitalize from '../util/stringUtils';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL ?? "http://localhost:8080"
 const REGISTER_ENDPOINT = `${BACKEND_URL}/register`;
 
 interface RegisterFormValues {
@@ -31,23 +31,23 @@ interface RegisterFormSubmissionResponseError {
 
 const registerFormValidationSchema = Yup.object().shape({
   username: Yup.string()
-    .min(6, "Username must be at least 6 characters")
-    .max(32, "Username must be less than 33 characters")
-    .test("isValidUsername", "Username can only contain values a-zA-Z0-9_-", isValidUsername)
-    .required("Username required"),
+    .min(6, 'Username must be at least 6 characters')
+    .max(32, 'Username must be less than 33 characters')
+    .test('isValidUsername', 'Username can only contain values a-zA-Z0-9_-', isValidUsername)
+    .required('Username required'),
   email: Yup.string()
-    .test("isValidEmail", "Invalid email", isValidEmail)
-    .required("Email required"),
+    .test('isValidEmail', 'Invalid email', isValidEmail)
+    .required('Email required'),
   password: Yup.string()
-    .min(8, "Password must be at least 8 characters")
-    .max(127, "Password must be less than 128 characters")
-    .test("isValidPassword", "Invalid password", isValidPassword)
-    .required("Password required"),
+    .min(8, 'Password must be at least 8 characters')
+    .max(127, 'Password must be less than 128 characters')
+    .test('isValidPassword', 'Invalid password', isValidPassword)
+    .required('Password required'),
   confirmPassword: Yup.string()
-    .min(8, " ")
-    .max(127, " ")
-    .test("isValidPassword", " ", isValidPassword)
-    .required("Confirm password required")
+    .min(8, ' ')
+    .max(127, ' ')
+    .test('isValidPassword', ' ', isValidPassword)
+    .required('Confirm password required')
 });
 
 export default function Register() {
@@ -65,7 +65,7 @@ export default function Register() {
   }, [formSubmitting]);
 
   const handleSubmissionError = (errorJson?: RegisterFormSubmissionResponseError) => {
-    let message: string = "Server error. Try again";
+    let message: string = 'Server error. Try again';
 
     if (errorJson) {
       const { errorCode, errorMessage } = errorJson;
@@ -77,8 +77,8 @@ export default function Register() {
 
   const submitPayload = async ({ username, email, password }: RegisterFormValues): Promise<void> => {
     const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         username: username,
         email: email,
@@ -89,7 +89,7 @@ export default function Register() {
     const response = await fetch(REGISTER_ENDPOINT, requestOptions);
 
     if (response.ok) {
-      navigate("/login");
+      navigate('/login');
       return;
     }
 
@@ -115,25 +115,25 @@ export default function Register() {
   const validateForm = (values: RegisterFormValues): RegisterFormErrorValidation => {
     if (submissionError) {
       return {
-        username: " ",
-        email: " ",
-        password: " ",
-        confirmPassword: " ",
+        username: ' ',
+        email: ' ',
+        password: ' ',
+        confirmPassword: ' ',
       };
     }
 
     const errors: RegisterFormErrorValidation = {};
     if (values.password !== values.confirmPassword) {
-      errors.password = "Passwords do not match";
-      errors.confirmPassword = "Passwords do not match";
+      errors.password = 'Passwords do not match';
+      errors.confirmPassword = 'Passwords do not match';
     }
 
     return errors;
   };
 
-  const clearSubmissionError = () : void => {
+  const clearSubmissionError = (): void => {
     setSubmissionError(undefined);
-  }
+  };
 
   return (
     <>
@@ -142,7 +142,7 @@ export default function Register() {
 
         <Formik
           innerRef={formikRef}
-          initialValues={{ username: "", email: "", password: "", confirmPassword: "" }}
+          initialValues={{ username: '', email: '', password: '', confirmPassword: '' }}
           validate={validateForm}
           validationSchema={registerFormValidationSchema}
           onSubmit={handleFormSubmission}
@@ -154,27 +154,27 @@ export default function Register() {
                 name="username"
                 onChange={value => {
                   clearSubmissionError();
-                  handleChange("username")(value);
+                  handleChange('username')(value);
                 }}
-                props={{ type: "text" }}
+                props={{ type: 'text' }}
               />
 
               <FormField
                 name="email"
                 onChange={value => {
                   clearSubmissionError();
-                  handleChange("email")(value);
+                  handleChange('email')(value);
                 }}
-                props={{ type: "email" }}
+                props={{ type: 'email' }}
               />
 
               <FormField
                 name="password"
                 onChange={value => {
                   clearSubmissionError();
-                  handleChange("password")(value);
+                  handleChange('password')(value);
                 }}
-                props={{ type: "password" }}
+                props={{ type: 'password' }}
               />
 
               <FormField
@@ -182,9 +182,9 @@ export default function Register() {
                 name="confirmPassword"
                 onChange={value => {
                   clearSubmissionError();
-                  handleChange("confirmPassword")(value);
+                  handleChange('confirmPassword')(value);
                 }}
-                props={{ type: "password" }}
+                props={{ type: 'password' }}
               />
 
               {submissionError && <ErrorText name='submission' errorMessage={submissionError} />}
@@ -192,7 +192,7 @@ export default function Register() {
               <Button data-cy="register-submit-button" type="submit" disabled={isSubmitting}>
                 {isSubmitting
                   ? <LoadingSpinner /> // TODO: fixme
-                  : "Submit"}
+                  : 'Submit'}
               </Button>
 
               <Spinner animation="border" />
@@ -206,7 +206,7 @@ export default function Register() {
 }
 
 const LoadingSpinner = ({ dataCyPrefix }: { dataCyPrefix?: string }): JSX.Element => {
-  dataCyPrefix = dataCyPrefix ? `${dataCyPrefix}-` : ""
+  dataCyPrefix = dataCyPrefix ? `${dataCyPrefix}-` : '';
 
   return (
     <>
@@ -215,9 +215,9 @@ const LoadingSpinner = ({ dataCyPrefix }: { dataCyPrefix?: string }): JSX.Elemen
         animation="border"
       />
     </>
-    
-  )
-}
+
+  );
+};
 
 type InputElementAttributes = React.DetailedHTMLProps<
   React.InputHTMLAttributes<HTMLInputElement>,
@@ -235,6 +235,7 @@ type SpanElementAttributes = React.DetailedHTMLProps<
 >;
 
 // Define a generic type for the HTML element attributes
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type ElementAttributes<T extends HTMLElement> =
   | InputElementAttributes
   | LabelElementAttributes
@@ -286,60 +287,60 @@ const ErrorText = ({ name, errorMessage }: { name: string, errorMessage: string 
 const styles = {
   container: {
     // flex: 1,
-    alignItems: "center",
+    alignItems: 'center',
     // justifyContent: "center",
   },
   horizontalContainer: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
   title: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   separator: {
     marginVertical: 30,
     height: 1,
-    width: "80%",
+    width: '80%',
   },
   formLabel: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     paddingRight: 20
   },
   field: {
     borderWidth: 2,
-    borderColor: "#5C5C5C",
+    borderColor: '#5C5C5C',
     minHeight: 56,
     borderRadius: 4,
     paddingHorizontal: 14,
     marginTop: 4
   },
   fieldError: {
-    borderColor: "#EB3F24"
+    borderColor: '#EB3F24'
   },
   fieldSuccess: {
-    borderColor: "#24E813"
+    borderColor: '#24E813'
   },
   errorText: {
-    color: "#EB3F24"
+    color: '#EB3F24'
   },
   successText: {
-    color: "#24E813"
+    color: '#24E813'
   },
   submitButton: {
     flex: 1,
-    margin: "auto",
-    textAlign: "center",
-    minWidth: "40%",
+    margin: 'auto',
+    textAlign: 'center',
+    minWidth: '40%',
     borderWidth: 2,
-    borderColor: "#5C5C5C",
+    borderColor: '#5C5C5C',
     borderRadius: 4,
     padding: 14,
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
 };
 
