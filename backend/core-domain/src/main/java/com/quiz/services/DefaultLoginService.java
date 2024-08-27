@@ -27,9 +27,9 @@ public class DefaultLoginService implements LoginService
     {
         UsernamePasswordAuthenticationToken authenticationToken =
             new UsernamePasswordAuthenticationToken(userCredentialsDto.email(), userCredentialsDto.password());
-        Authentication authenticate = authenticationManager.authenticate(authenticationToken);
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
-        UserDetails user = (UserDetails) authenticate.getPrincipal();
+        UserDetails user = (UserDetails) authentication.getPrincipal();
 
         return jwtTokenGenerator.generate(user.getUsername());
     }

@@ -2,18 +2,17 @@ package com.quiz.core.entities;
 
 import com.quiz.core.entities.validators.ValidEmail;
 import com.quiz.core.entities.validators.ValidUsername;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @SuppressWarnings("unused")
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 @EqualsAndHashCode
 public class User
 {
@@ -32,10 +31,10 @@ public class User
     @Column(nullable = false)
     String passwordHash;
 
-    private User()
-    {
-        // no args jackson constructor
-    }
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    RefreshToken refreshToken;
+
     public User(String username, String email, String passwordHash)
     {
         this.username = username;

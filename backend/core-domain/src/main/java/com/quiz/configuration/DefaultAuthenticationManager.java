@@ -19,7 +19,10 @@ public class DefaultAuthenticationManager implements AuthenticationManager
     private final PasswordHashGenerator passwordHashGenerator;
 
     @Autowired
-    public DefaultAuthenticationManager(UserDetailsService userDetailsService, PasswordHashGenerator passwordHashGenerator)
+    public DefaultAuthenticationManager(
+            UserDetailsService userDetailsService,
+            PasswordHashGenerator passwordHashGenerator
+    )
     {
         this.userDetailsService = userDetailsService;
         this.passwordHashGenerator = passwordHashGenerator;
@@ -47,6 +50,8 @@ public class DefaultAuthenticationManager implements AuthenticationManager
             throw new BadCredentialsException("Invalid credentials");
         }
 
-        return new UsernamePasswordAuthenticationToken(userDetails, encodedPassword, userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(
+                userDetails, encodedPassword, userDetails.getAuthorities()
+        );
     }
 }
