@@ -11,7 +11,7 @@ public interface RefreshTokenService
 
     RefreshToken createRefreshToken(User user);
 
-    RefreshToken verifyExpiration(RefreshToken refreshToken);
+    RefreshToken verifyExpirationOrThrow(RefreshToken refreshToken);
 
     boolean deleteByUserDetails(String email);
 

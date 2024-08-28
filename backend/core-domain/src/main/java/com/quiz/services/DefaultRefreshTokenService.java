@@ -5,6 +5,7 @@ import com.quiz.core.entities.User;
 import com.quiz.core.repositories.RefreshTokenRepository;
 import com.quiz.core.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -14,16 +15,18 @@ import java.util.UUID;
 @Service
 public class DefaultRefreshTokenService implements RefreshTokenService
 {
-    private static final long REFRESH_TOKEN_EXPIRY_MS = 24 * 60 * 60 * 1000;
-
+    private final long refreshTokenExpirySeconds;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
 
     @Autowired
     public DefaultRefreshTokenService(
-            RefreshTokenRepository refreshTokenRepository, UserRepository userRepository
+            @Value("${refreshToken.expirySeconds}") long refreshTokenExpirySeconds,
+            RefreshTokenRepository refreshTokenRepository,
+            UserRepository userRepository
     )
     {
+        this.refreshTokenExpirySeconds = refreshTokenExpirySeconds;
         this.refreshTokenRepository = refreshTokenRepository;
         this.userRepository = userRepository;
     }
@@ -41,7 +44,7 @@ public class DefaultRefreshTokenService implements RefreshTokenService
         existingRefreshToken.ifPresent(refreshTokenRepository::delete);
 
         String token = UUID.randomUUID().toString();
-        Instant expiryDate = Instant.now().plusMillis(REFRESH_TOKEN_EXPIRY_MS);
+        Instant expiryDate = Instant.now().plusSeconds(refreshTokenExpirySeconds);
         RefreshToken refreshToken = new RefreshToken(user, token, expiryDate);
 
         refreshTokenRepository.save(refreshToken);
@@ -49,7 +52,7 @@ public class DefaultRefreshTokenService implements RefreshTokenService
     }
 
     @Override
-    public RefreshToken verifyExpiration(RefreshToken refreshToken)
+    public RefreshToken verifyExpirationOrThrow(RefreshToken refreshToken)
     {
         Instant expiryDate = refreshToken.getExpiryDate();
         Instant now = Instant.now();

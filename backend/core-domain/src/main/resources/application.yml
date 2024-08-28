@@ -1,0 +1,3 @@
+refreshToken:
+  cookieName: 'refresh-token'
+  expirySeconds: 86400 # = 24 * 60 * 60 seconds i.e. one day

@@ -15,19 +15,19 @@ import static org.mockito.Mockito.*;
 
 public class DefaultRefreshTokenServiceTest
 {
-    private static final User USER = new User("username", "email@email.com", "passwordHash");
+    private static final User USER =
+            new User("username", "email@email.com", "passwordHash");
 
     private final RefreshTokenRepository refreshTokenRepositoryMock;
-    private final UserRepository userRepositoryMock;
     private final DefaultRefreshTokenService refreshTokenService;
 
     public DefaultRefreshTokenServiceTest()
     {
         this.refreshTokenRepositoryMock = mock(RefreshTokenRepository.class);
-        this.userRepositoryMock = mock(UserRepository.class);
         this.refreshTokenService = new DefaultRefreshTokenService(
+                100,
                 refreshTokenRepositoryMock,
-                userRepositoryMock
+                mock(UserRepository.class)
         );
     }
 
@@ -64,7 +64,7 @@ public class DefaultRefreshTokenServiceTest
         Instant oneMinuteAgo = Instant.now().minusSeconds(60);
         RefreshToken token = new RefreshToken(USER, "token", oneMinuteAgo);
 
-        assertThatThrownBy(() -> refreshTokenService.verifyExpiration(token))
+        assertThatThrownBy(() -> refreshTokenService.verifyExpirationOrThrow(token))
                 .isInstanceOf(RefreshTokenService.RefreshTokenExpiredException.class);
     }
 }

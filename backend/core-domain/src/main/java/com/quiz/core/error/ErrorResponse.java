@@ -16,11 +16,18 @@ public enum ErrorResponse
     LOGIN_EMAIL_ERROR(new ErrorResponseBody(1101, ErrorResponse.LOGIN_ERROR_MESSAGE)),
     LOGIN_PASSWORD_ERROR(new ErrorResponseBody(1102, ErrorResponse.LOGIN_ERROR_MESSAGE)),
     LOGIN_BAD_CREDENTIALS_ERROR(new ErrorResponseBody(1103, ErrorResponse.LOGIN_ERROR_MESSAGE)),
+
+    REFRESH_TOKEN_COOKIE_MISSING_ERROR(new ErrorResponseBody(1200, ErrorResponse.REFRESH_TOKEN_COOKIE_MISSING_ERROR_MESSAGE)),
+    REFRESH_TOKEN_COOKIE_UNKNOWN_ERROR(new ErrorResponseBody(1201, ErrorResponse.REFRESH_TOKEN_COOKIE_ERROR_MESSAGE)),
+    REFRESH_TOKEN_COOKIE_EXPIRED_ERROR(new ErrorResponseBody(1202, ErrorResponse.REFRESH_TOKEN_COOKIE_ERROR_MESSAGE)),
+
     ;
 
     public static final String UNEXPECTED_ERROR_MESSAGE = "Oh oh something went wrong";
     public static final String REGISTRATION_ERROR_MESSAGE = "Invalid username, email or password";
     public static final String LOGIN_ERROR_MESSAGE = "Invalid email or password";
+    public static final String REFRESH_TOKEN_COOKIE_MISSING_ERROR_MESSAGE = "Missing refresh token cookie";
+    public static final String REFRESH_TOKEN_COOKIE_ERROR_MESSAGE = "Invalid refresh token cookie";
 
     private final ErrorResponseBody body;
 
