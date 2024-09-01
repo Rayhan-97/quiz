@@ -7,8 +7,7 @@ import useAuth from '../hooks/useAuth';
 import { EMAIL_REGEX } from '../util/registerValidator';
 import capitalize from '../util/stringUtils';
 import { Spinner } from 'react-bootstrap';
-
-const LOGIN_ENDPOINT = '/login';
+import { ENDPOINTS } from '../util/constants';
 
 type FormValues = {
     email: string;
@@ -36,11 +35,10 @@ const Login = () => {
     const onSubmit = async ({ email, password }: FormValues) => {
         try {
             const response = await axios.post(
-                LOGIN_ENDPOINT,
+                ENDPOINTS.login,
                 JSON.stringify({ email, password }),
                 {
-                    headers: { 'Content-Type': 'application/json' },
-                    // withCredentials: true
+                    headers: { 'Content-Type': 'application/json' }
                 }
             );
             const token: string = response.data;

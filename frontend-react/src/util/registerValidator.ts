@@ -14,4 +14,5 @@ export const isValidPassword = (password: string = ''): boolean => {
   return password !== null && password.length >= 8 && password.length < 128;
 };
 
-export default { isValidUsername, isValidEmail, isValidPassword };
+const exports = { isValidUsername, isValidEmail, isValidPassword };
+export default exports;

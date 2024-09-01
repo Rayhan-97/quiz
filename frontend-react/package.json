@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@tanstack/react-query": "^5.53.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/react": "^18.2.19",
@@ -23,6 +24,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "no-eslint-start": "DISABLE_ESLINT_PLUGIN=true react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -47,6 +49,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.0-placeholder-for-preset-env.2",
+    "@tanstack/eslint-plugin-query": "^5.53.0",
     "@testing-library/react": "^14.0.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.4.9",

@@ -15,7 +15,9 @@ const useAuth = (): AuthData => {
 
     return {
         authToken: authContext.auth.accessToken,
-        setJwtAccessToken: (token: string) => authContext.setAuth({ accessToken: token })
+        setJwtAccessToken: (token: string) => authContext.setAuth(prev => {
+            return ({ ...prev, accessToken: token });
+        })
     };
 };
 
