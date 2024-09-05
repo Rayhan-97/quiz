@@ -1,6 +1,122 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+/* Reset some basic elements */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+  font-size: 1rem;
+  line-height: 1.2rem;
+}
+
+.nav-container {
+  container: navbar/inline-size;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.5em 1em;
+  background-color: black;
+  border-bottom: 1px solid white;
+}
+nav div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1.25rem;
+}
+nav a:has(.full-logo),
+nav a:has(button) {
+  display: none;
+}
+
+menu {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 1.25rem;
+  padding: 1.2em;
+  background-color: black;
+  border-bottom: 1px solid white;
+}
+
+@container navbar (min-width: 40em) {
+  nav {
+    width: calc(100% - 2em);
+    max-width: 60em;
+    border-radius: 1.875rem;
+    border: none;
+    padding: 1em 1.5em;
+    margin-top: 1em;
+  }
+  nav a:has(.full-logo),
+  nav a:has(button) {
+    display: block;
+  }
+  nav a:has(.logo),
+  nav .hamburger-menu,
+  nav .close {
+    display: none;
+  }
+  menu {
+    display: none;
+  }
+}
+button {
+  background-color: transparent;
+  padding: 1em 3em;
+  border: white 1px solid;
+  border-radius: 30px;
+  color: white;
+}
+button.primary {
+  border-color: transparent;
+  background-color: #4E36A6;
+}
+
+.icon {
+  height: 1.5rem;
+}
+.icon.logo, .icon.full-logo {
+  height: 3rem;
+}
+.icon.sun {
+  height: 1.875rem;
+}
+
+.hidden,
+.icon:has(> .hidden) {
+  display: none;
+}
+
+body {
+  background-color: #181818;
+  color: white;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+}
+
 .content-container {
   display: flex;
   justify-content: center;
+  padding: 2em;
 }
 
 .form {

@@ -1,6 +1,151 @@
+@use 'sass:math';
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+@function strip-units($number) {
+    @return math.div($number, ($number * 0 + 1));
+}
+
+@function toRem($pixelValue) {
+    @return math.div(strip-units($pixelValue), 16) * 1rem;
+}
+
+@mixin flexCentre($direction: row) {
+    display: flex;
+    flex-direction: $direction;
+    justify-content: center;
+    align-items: center;
+}
+
+// colors
+$background: #181818;
+$background-contrast: black;
+$foreground: white;
+$primary: #4E36A6;
+
+/* Reset some basic elements */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Roboto", sans-serif;
+    font-size: 1rem;
+    line-height: 1.2rem;
+}
+
+.nav-container {
+    container: navbar / inline-size;
+    @include flexCentre(column);
+}
+
+nav {
+    @include flexCentre();
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.5em 1em;
+    background-color: $background-contrast;
+    border-bottom: 1px solid $foreground;
+
+    div {
+        @include flexCentre();
+        gap: toRem(20px);
+    }
+
+    a:has(.full-logo),
+    a:has(button) {
+        display: none;
+    }
+}
+
+menu {
+    @include flexCentre();
+    flex-wrap: wrap;
+    width: 100%;
+    gap: toRem(20px);
+    padding: 1.2em;
+    background-color: $background-contrast;
+    border-bottom: 1px solid $foreground;
+}
+
+@container navbar (min-width: 40em) {
+    nav {
+        width: calc(100% - 2em);
+        max-width: 60em;
+        border-radius: toRem(30px);
+        border: none;
+        padding: 1em 1.5em;
+        margin-top: 1em;
+
+        a:has(.full-logo),
+        a:has(button) {
+            display: block;
+        }
+
+        a:has(.logo),
+        .hamburger-menu,
+        .close {
+            display: none;
+        }
+    }
+
+    menu {
+        display: none;
+    }
+}
+
+button {
+    background-color: transparent;
+    padding: 1em 3em;
+    border: $foreground 1px solid;
+    border-radius: 30px;
+    color: $foreground;
+
+    &.primary {
+        border-color: transparent;
+        background-color: $primary;
+    }
+}
+
+.icon {
+    height: toRem(24px);
+
+    &.logo,
+    &.full-logo {
+        height: toRem(48px);
+    }
+
+    &.sun {
+        height: toRem(30px);
+    }
+}
+
+.hidden,
+.icon:has(>.hidden) {
+    display: none;
+}
+
+body {
+    background-color: $background;
+    color: $foreground;
+}
+
+a {
+    color: $foreground;
+    text-decoration: none;
+}
+
+
+
+
+
+
+
+
 .content-container {
     display: flex;
     justify-content: center;
+    padding: 2em;
 }
 
 .form {
