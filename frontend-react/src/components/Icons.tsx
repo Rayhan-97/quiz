@@ -4,6 +4,7 @@ import { ReactComponent as CloseIcon } from '../assets/icons/close.svg';
 import { ReactComponent as SunIcon } from '../assets/icons/sun.svg';
 import { ReactComponent as FullLogoSvg } from '../assets/icons/fullLogo.svg';
 import { ReactComponent as LogoSvg } from '../assets/icons/logo.svg';
+import clsx from 'clsx';
 
 // this is height/width they will be set to 100% internally here
 // so the height/width can be controlled with CSS
@@ -11,20 +12,23 @@ type SvgIconProps = Omit<React.SVGProps<SVGSVGElement>, 'height' | 'width'>;
 
 type BaseIconProps = {
     children: ReactNode,
-    name: string
+    name: string,
+    clickable?: boolean
 }
 
-const BaseIcon = ({ children, name }: BaseIconProps) => {
+const BaseIcon = ({ children, name, clickable = false }: BaseIconProps) => {
     return <>
-        <div className={`icon ${name}`}>
-            {children}
+            <div className="icon-wrapper">
+        <div className={clsx('icon', name, clickable && 'clickable')}>
+                {children}
+            </div>
         </div>
     </>;
 };
 
 const HamburgerMenu = (props: SvgIconProps) => {
     return <>
-        <BaseIcon name={'hamburger-menu'}>
+        <BaseIcon name={'hamburger-menu'} clickable={true}>
             <HamburgerIcon height={'100%'} width={'100%'} {...props} />
         </BaseIcon>
     </>;
@@ -32,7 +36,7 @@ const HamburgerMenu = (props: SvgIconProps) => {
 
 const Close = (props: SvgIconProps) => {
     return <>
-        <BaseIcon name={'close'}>
+        <BaseIcon name={'close'} clickable={true}>
             <CloseIcon height={'100%'} width={'100%'} {...props} />
         </BaseIcon>
     </>;
@@ -40,7 +44,7 @@ const Close = (props: SvgIconProps) => {
 
 const Sun = (props: SvgIconProps) => {
     return <>
-        <BaseIcon name={'sun'}>
+        <BaseIcon name={'sun'} clickable={true}>
             <SunIcon height={'100%'} width={'100%'} {...props} />
         </BaseIcon>
     </>;

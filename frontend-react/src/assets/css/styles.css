@@ -9,6 +9,13 @@
   font-size: 1rem;
   line-height: 1.2rem;
 }
+* :focus {
+  outline: none;
+}
+* :focus-visible {
+  outline: solid 0.125rem #a192db;
+  outline-offset: 0.25rem;
+}
 
 .nav-container {
   container: navbar/inline-size;
@@ -87,9 +94,16 @@ button.primary {
   border-color: transparent;
   background-color: #4E36A6;
 }
+button:hover {
+  background-color: white;
+  color: black;
+  border-color: black;
+  cursor: pointer;
+}
 
 .icon {
   height: 1.5rem;
+  color: #BBBBBB;
 }
 .icon.logo, .icon.full-logo {
   height: 3rem;
@@ -97,9 +111,41 @@ button.primary {
 .icon.sun {
   height: 1.875rem;
 }
+.icon.clickable :hover {
+  cursor: pointer;
+  color: white;
+}
+.icon.clickable::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: 100%;
+  aspect-ratio: 1;
+  background-color: rgba(255, 255, 255, 0.2);
+  opacity: 0;
+  border-radius: 50%;
+  box-sizing: content-box;
+  padding: 0.25rem;
+  pointer-events: none;
+}
+.icon.close::before {
+  padding: 0.4375rem;
+}
+.icon.hamburger-menu::before {
+  padding: 0.3125rem;
+}
+
+.icon-wrapper {
+  position: relative;
+}
+.icon-wrapper .icon:hover::before {
+  opacity: 1;
+}
 
 .hidden,
-.icon:has(> .hidden) {
+.icon-wrapper:has(.hidden) {
   display: none;
 }
 

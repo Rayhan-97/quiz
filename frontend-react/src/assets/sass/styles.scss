@@ -1,4 +1,5 @@
 @use 'sass:math';
+@use 'sass:color';
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
@@ -22,6 +23,7 @@
 $background: #181818;
 $background-contrast: black;
 $foreground: white;
+$foreground-light: #BBBBBB;
 $primary: #4E36A6;
 
 /* Reset some basic elements */
@@ -32,6 +34,15 @@ $primary: #4E36A6;
     font-family: "Roboto", sans-serif;
     font-size: 1rem;
     line-height: 1.2rem;
+
+    :focus {
+        outline: none;
+    }
+
+    :focus-visible {
+        outline: solid toRem(2px) color.scale($primary, $lightness: 50%);
+        outline-offset: toRem(4px);
+    }
 }
 
 .nav-container {
@@ -105,10 +116,18 @@ button {
         border-color: transparent;
         background-color: $primary;
     }
+
+    &:hover {
+        background-color: $foreground;
+        color: $background-contrast;
+        border-color: $background-contrast;
+        cursor: pointer;
+    }
 }
 
 .icon {
     height: toRem(24px);
+    color: $foreground-light;
 
     &.logo,
     &.full-logo {
@@ -118,10 +137,52 @@ button {
     &.sun {
         height: toRem(30px);
     }
+
+    &.clickable {
+        :hover {
+            cursor: pointer;
+            color: $foreground;
+        }
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            translate: -50% -50%;
+            width: 100%;
+            aspect-ratio: 1;
+            background-color: rgba($foreground, $alpha: 0.2);
+            opacity: 0;
+            border-radius: 50%;
+            box-sizing: content-box;
+            padding: toRem(4px);
+            pointer-events: none;
+
+        }
+    }
+
+    &.close::before {
+        padding: toRem(7px);
+    }
+
+    &.hamburger-menu::before {
+        padding: toRem(5px);
+    }
+}
+
+.icon-wrapper {
+    position: relative;
+
+    .icon:hover {
+        &::before {
+            opacity: 1;
+        }
+    }
 }
 
 .hidden,
-.icon:has(>.hidden) {
+.icon-wrapper:has(.hidden) {
     display: none;
 }
 
