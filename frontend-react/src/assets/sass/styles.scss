@@ -1,5 +1,7 @@
 @use 'sass:math';
 @use 'sass:color';
+@use 'sass:map';
+@use 'sass:list';
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
@@ -19,12 +21,78 @@
     align-items: center;
 }
 
-// colors
-$background: #181818;
-$background-contrast: black;
-$foreground: white;
-$foreground-light: #BBBBBB;
-$primary: #4E36A6;
+
+$white-100: hsl (0, 0, 100%);
+$white-73: hsl(0, 0%, 73%);
+
+
+$colors: (
+    'light': ('bg': hsl(0, 0%, 96%),
+        'bg-contrast': hsl(0, 0%, 100%),
+        'fg': hsl(0, 0%, 0%) '0, 0, 0',
+        'fg-light': hsl(0, 0%, 9%),
+        'primary': hsl(253, 51%, 43%),
+        'nav': hsl(253, 51%, 43%),
+
+    ),
+    'dark': ('bg': hsl(0, 0%, 9%),
+        'bg-contrast': hsl(0, 0%, 0%),
+        'fg': hsl(0, 0%, 100%) '255, 255, 255',
+        'fg-light': hsl(0, 0%, 73%),
+        'primary': hsl(253, 51%, 43%),
+        'nav': hsl(0, 0%, 0%),
+    )
+);
+
+@function themedColor($colorName) {
+    @return var(--#{$colorName});
+}
+
+$themeMap: null;
+
+@mixin themify() {
+    @each $theme, $localThemeMap in $colors {
+        .theme-#{$theme} {
+            $themeMap: $localThemeMap !global;
+            @content
+        }
+    }
+}
+
+@function t($key, $index: 1) {
+    $colorValues: map-get($map: $themeMap, $key: $key);
+    @return nth($colorValues, $index);
+}
+
+:root {
+    .theme-light {
+        @each $colorVar, $values in map-get($map: $colors, $key: 'light') {
+            $suffixes: (
+                '',
+                '-rgb',
+            );
+
+            @for $i from 1 through length($values) {
+                $cssVariableName: --#{$colorVar}#{nth($suffixes, $i)};
+                #{$cssVariableName}: #{nth($values, $i)};
+            }
+        }
+    }
+
+    .theme-dark {
+        @each $colorVar, $values in map-get($map: $colors, $key: 'dark') {
+            $suffixes: (
+                '',
+                '-rgb',
+            );
+
+            @for $i from 1 through length($values) {
+                $cssVariableName: --#{$colorVar}#{nth($suffixes, $i)};
+                #{$cssVariableName}: #{nth($values, $i)};
+            }
+        }
+    }
+}
 
 /* Reset some basic elements */
 * {
@@ -40,8 +108,13 @@ $primary: #4E36A6;
     }
 
     :focus-visible {
-        outline: solid toRem(2px) color.scale($primary, $lightness: 50%);
         outline-offset: toRem(4px);
+    }
+
+    @include themify() {
+        :focus-visible {
+            outline: solid toRem(2px) color.adjust($color: t(primary), $hue: 180);
+        }
     }
 }
 
@@ -55,8 +128,8 @@ nav {
     justify-content: space-between;
     width: 100%;
     padding: 0.5em 1em;
-    background-color: $background-contrast;
-    border-bottom: 1px solid $foreground;
+    background-color: themedColor(nav);
+    border-bottom: 1px solid themedColor(fg);
 
     div {
         @include flexCentre();
@@ -75,8 +148,8 @@ menu {
     width: 100%;
     gap: toRem(20px);
     padding: 1.2em;
-    background-color: $background-contrast;
-    border-bottom: 1px solid $foreground;
+    background-color: themedColor(bg);
+    border-bottom: 1px solid themedColor(fg);
 }
 
 @container navbar (min-width: 40em) {
@@ -93,9 +166,7 @@ menu {
             display: block;
         }
 
-        a:has(.logo),
-        .hamburger-menu,
-        .close {
+        a:has(.logo) {
             display: none;
         }
     }
@@ -103,31 +174,39 @@ menu {
     menu {
         display: none;
     }
+
+    .icon-wrapper {
+
+        &:has(.hamburger-menu),
+        &:has(.close) {
+            display: none;
+        }
+    }
 }
 
 button {
     background-color: transparent;
     padding: 1em 3em;
-    border: $foreground 1px solid;
-    border-radius: 30px;
-    color: $foreground;
+    border: themedColor(fg) 1px solid;
+    border-radius: toRem(30px);
+    color: themedColor(fg);
 
     &.primary {
         border-color: transparent;
-        background-color: $primary;
+        background-color: themedColor(primary);
     }
 
     &:hover {
-        background-color: $foreground;
-        color: $background-contrast;
-        border-color: $background-contrast;
+        background-color: themedColor(fg);
+        color: themedColor(bg);
+        border-color: themedColor(bg);
         cursor: pointer;
     }
 }
 
 .icon {
     height: toRem(24px);
-    color: $foreground-light;
+    color: $white-73;
 
     &.logo,
     &.full-logo {
@@ -138,10 +217,14 @@ button {
         height: toRem(30px);
     }
 
+    &.moon {
+        height: toRem(28px);
+    }
+
     &.clickable {
         :hover {
             cursor: pointer;
-            color: $foreground;
+            color: white;
         }
 
         &::before {
@@ -152,7 +235,7 @@ button {
             translate: -50% -50%;
             width: 100%;
             aspect-ratio: 1;
-            background-color: rgba($foreground, $alpha: 0.2);
+            background-color: rgba($white-73, $alpha: 0.2);
             opacity: 0;
             border-radius: 50%;
             box-sizing: content-box;
@@ -186,13 +269,8 @@ button {
     display: none;
 }
 
-body {
-    background-color: $background;
-    color: $foreground;
-}
-
 a {
-    color: $foreground;
+    color: themedColor(fg);
     text-decoration: none;
 }
 

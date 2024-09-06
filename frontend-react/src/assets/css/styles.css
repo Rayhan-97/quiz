@@ -1,5 +1,24 @@
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+:root .theme-light {
+  --bg: hsl(0, 0%, 96%);
+  --bg-contrast: hsl(0, 0%, 100%);
+  --fg: hsl(0, 0%, 0%);
+  --fg-rgb: 0, 0, 0;
+  --fg-light: hsl(0, 0%, 9%);
+  --primary: hsl(253, 51%, 43%);
+  --nav: hsl(253, 51%, 43%);
+}
+:root .theme-dark {
+  --bg: hsl(0, 0%, 9%);
+  --bg-contrast: hsl(0, 0%, 0%);
+  --fg: hsl(0, 0%, 100%);
+  --fg-rgb: 255, 255, 255;
+  --fg-light: hsl(0, 0%, 73%);
+  --primary: hsl(253, 51%, 43%);
+  --nav: hsl(0, 0%, 0%);
+}
+
 /* Reset some basic elements */
 * {
   margin: 0;
@@ -13,8 +32,13 @@
   outline: none;
 }
 * :focus-visible {
-  outline: solid 0.125rem #a192db;
   outline-offset: 0.25rem;
+}
+* .theme-light :focus-visible {
+  outline: solid 0.125rem #8da636;
+}
+* .theme-dark :focus-visible {
+  outline: solid 0.125rem #8da636;
 }
 
 .nav-container {
@@ -33,8 +57,8 @@ nav {
   justify-content: space-between;
   width: 100%;
   padding: 0.5em 1em;
-  background-color: black;
-  border-bottom: 1px solid white;
+  background-color: var(--nav);
+  border-bottom: 1px solid var(--fg);
 }
 nav div {
   display: flex;
@@ -57,8 +81,8 @@ menu {
   width: 100%;
   gap: 1.25rem;
   padding: 1.2em;
-  background-color: black;
-  border-bottom: 1px solid white;
+  background-color: var(--bg);
+  border-bottom: 1px solid var(--fg);
 }
 
 @container navbar (min-width: 40em) {
@@ -74,42 +98,46 @@ menu {
   nav a:has(button) {
     display: block;
   }
-  nav a:has(.logo),
-  nav .hamburger-menu,
-  nav .close {
+  nav a:has(.logo) {
     display: none;
   }
   menu {
+    display: none;
+  }
+  .icon-wrapper:has(.hamburger-menu), .icon-wrapper:has(.close) {
     display: none;
   }
 }
 button {
   background-color: transparent;
   padding: 1em 3em;
-  border: white 1px solid;
-  border-radius: 30px;
-  color: white;
+  border: var(--fg) 1px solid;
+  border-radius: 1.875rem;
+  color: var(--fg);
 }
 button.primary {
   border-color: transparent;
-  background-color: #4E36A6;
+  background-color: var(--primary);
 }
 button:hover {
-  background-color: white;
-  color: black;
-  border-color: black;
+  background-color: var(--fg);
+  color: var(--bg);
+  border-color: var(--bg);
   cursor: pointer;
 }
 
 .icon {
   height: 1.5rem;
-  color: #BBBBBB;
+  color: hsl(0, 0%, 73%);
 }
 .icon.logo, .icon.full-logo {
   height: 3rem;
 }
 .icon.sun {
   height: 1.875rem;
+}
+.icon.moon {
+  height: 1.75rem;
 }
 .icon.clickable :hover {
   cursor: pointer;
@@ -123,7 +151,7 @@ button:hover {
   translate: -50% -50%;
   width: 100%;
   aspect-ratio: 1;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(186, 186, 186, 0.2);
   opacity: 0;
   border-radius: 50%;
   box-sizing: content-box;
@@ -149,13 +177,8 @@ button:hover {
   display: none;
 }
 
-body {
-  background-color: #181818;
-  color: white;
-}
-
 a {
-  color: white;
+  color: var(--fg);
   text-decoration: none;
 }
 

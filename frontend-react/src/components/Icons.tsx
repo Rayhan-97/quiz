@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { ReactComponent as HamburgerIcon } from '../assets/icons/hamburgerMenu.svg';
 import { ReactComponent as CloseIcon } from '../assets/icons/close.svg';
 import { ReactComponent as SunIcon } from '../assets/icons/sun.svg';
+import { ReactComponent as MoonIcon } from '../assets/icons/moon.svg';
 import { ReactComponent as FullLogoSvg } from '../assets/icons/fullLogo.svg';
 import { ReactComponent as LogoSvg } from '../assets/icons/logo.svg';
 import clsx from 'clsx';
@@ -50,6 +51,14 @@ const Sun = (props: SvgIconProps) => {
     </>;
 };
 
+const Moon = (props: SvgIconProps) => {
+    return <>
+        <BaseIcon name={'moon'} clickable={true}>
+            <MoonIcon height={'100%'} width={'100%'} {...props} />
+        </BaseIcon>
+    </>;
+};
+
 const FullLogo = (props: SvgIconProps) => {
     return <>
         <BaseIcon name={'full-logo'}>
@@ -72,6 +81,7 @@ const Icons = {
     HamburgerMenu,
     Close,
     Sun,
+    Moon,
     FullLogo,
     Logo,
 };
