@@ -1,7 +1,6 @@
 import { HttpStatusCode, isAxiosError } from 'axios';
 import clsx from 'clsx';
 import { useState } from 'react';
-import { Spinner } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
@@ -85,7 +84,7 @@ const Login = () => {
                     <div className="fields-wrapper">
                         <div className={clsx('field-container', email.error && 'field-error')}>
                             <label htmlFor={'email'}>Email address</label>
-                            <input data-cy={'email-input'} id={'email'} {...email.register} />
+                            <input data-cy={'email-input'} id={'email'} type={'email'} {...email.register} />
                             {email.error && <span data-cy={'email-error'}>{email.error}</span>}
                         </div>
                         <div className={clsx('field-container', password.error && 'field-error')}>
@@ -112,7 +111,7 @@ const Login = () => {
                 </form>
             </div>
             <span>
-                Don&apos;t already have an account?&nbsp;
+                Don&apos;t have an account?&nbsp;
                 <Link className={'link'} to='/register'>Sign up</Link>
             </span>
         </div>
@@ -125,7 +124,7 @@ type ShowHidePasswordIconsProps = {
     handler: () => void
 }
 
-const ShowHidePasswordIcons = ({ isHidden, handler }: ShowHidePasswordIconsProps) => {
+export const ShowHidePasswordIcons = ({ isHidden, handler }: ShowHidePasswordIconsProps) => {
     return (<>
         <Icons.OpenEye
             className={clsx(!isHidden && 'hidden')}
@@ -145,17 +144,10 @@ const ShowHidePasswordIcons = ({ isHidden, handler }: ShowHidePasswordIconsProps
     );
 };
 
-const LoadingSpinner = ({ dataCyPrefix }: { dataCyPrefix?: string }) => {
-    dataCyPrefix = dataCyPrefix ? `${dataCyPrefix}-` : '';
-
-    return (
-        <>
-            <Spinner
-                data-cy={`${dataCyPrefix}loading-spinner`}
-                animation="border"
-            />
-        </>
-
+export const LoadingSpinner = () => {
+    return (<>
+        <div data-cy={'loading-spinner'}></div>
+    </>
     );
 };
 

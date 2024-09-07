@@ -161,6 +161,10 @@ button:hover {
   border-color: var(--bg);
   cursor: pointer;
 }
+button:disabled {
+  background-color: rgba(120, 112, 233, 0.3);
+  border: 1px solid var(--primary);
+}
 
 .icon {
   height: 1.5rem;
@@ -350,6 +354,25 @@ form {
   right: 0;
   top: 50%;
   translate: -40% -50%;
+}
+
+[data-cy=loading-spinner] {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 2px solid var(--fg);
+  border-radius: 50%;
+  border-top: none;
+  border-left: none;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /*# sourceMappingURL=styles.css.map */

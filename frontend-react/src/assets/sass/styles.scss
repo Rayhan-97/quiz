@@ -32,6 +32,7 @@ $white-73: hsl(0, 0%, 73%);
 $black-63: hsl(0, 0%, 37%);
 $errorRed: #DF0000;
 $primary: hsl(253, 51%, 43%);
+$disabled: rgb(120, 112, 233, 0.3);
 $outline: #{color.adjust($color: $primary, $hue: 180)}; // complement of $primary
 
 $colors: (
@@ -275,6 +276,11 @@ button {
         border-color: themedColor(bg);
         cursor: pointer;
     }
+
+    &:disabled {
+        background-color: $disabled;
+        border: 1px solid themedColor(primary);
+    }
 }
 //                                                **************
 // --------------------BUTTONS-------------------------------
@@ -505,3 +511,22 @@ form {
 //                                           **************
 // --------------------FORMS-------------------------------
 //                                           **************
+
+[data-cy=loading-spinner] {
+    width: toRem(24px);
+    height: toRem(24px);
+    border: 2px solid themedColor(fg);
+    border-radius: 50%;
+    border-top: none;
+    border-left: none;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

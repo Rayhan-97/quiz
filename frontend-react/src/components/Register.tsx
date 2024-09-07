@@ -1,14 +1,13 @@
 import { HttpStatusCode, isAxiosError } from 'axios';
 import clsx from 'clsx';
 import { useState } from 'react';
-import { Spinner } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
 import { ENDPOINTS } from '../util/constants';
 import { EMAIL_REGEX, USERNAME_REGEX } from '../util/registerValidator';
 import Icons from './Icons';
-import { spaceEnterHandler } from './Nav';
+import { LoadingSpinner, ShowHidePasswordIcons } from './Login';
 
 type FormValues = {
     email: string;
@@ -113,13 +112,13 @@ const Register = () => {
                     <div className="fields-wrapper">
                         <div className={clsx('field-container', email.error && 'field-error')}>
                             <label htmlFor={'email'}>Email address</label>
-                            <input data-cy={'email-input'} id={'email'} {...email.register} />
+                            <input data-cy={'email-input'} id={'email'} type={'email'} {...email.register} />
                             {email.error && <span data-cy={'email-error'}>{email.error}</span>}
                         </div>
 
                         <div className={clsx('field-container', username.error && 'field-error')}>
                             <label htmlFor={'username'}>Username</label>
-                            <input data-cy={'username-input'} id={'username'} {...username.register} />
+                            <input data-cy={'username-input'} id={'username'} type={'text'} {...username.register} />
                             {username.error && <span data-cy={'username-error'}>{username.error}</span>}
                         </div>
 
@@ -132,10 +131,7 @@ const Register = () => {
                                     type={isPasswordHidden ? 'password' : 'text'}
                                     {...password.register}
                                 />
-                                <ShowHidePasswordIcons
-                                    isHidden={isPasswordHidden}
-                                    handler={toggleIsPasswordHidden}
-                                />
+                                <ShowHidePasswordIcons isHidden={isPasswordHidden} handler={toggleIsPasswordHidden} />
                             </div>
                             {password.error && <span data-cy={'password-error'}>{password.error}</span>}
                         </div>
@@ -155,7 +151,7 @@ const Register = () => {
                     </div>
 
                     <button className={'primary'} data-cy={'submit-button'} disabled={isSubmitting}>
-                        {isSubmitting ? <LoadingSpinner /> : 'Sign in'}
+                        {isSubmitting ? <LoadingSpinner /> : 'Sign Up'}
                     </button>
                 </form>
             </div>
@@ -165,45 +161,6 @@ const Register = () => {
             </span>
         </div>
     </>
-    );
-};
-
-type ShowHidePasswordIconsProps = {
-    isHidden: boolean,
-    handler: () => void
-}
-
-const ShowHidePasswordIcons = ({ isHidden, handler }: ShowHidePasswordIconsProps) => {
-    return (<>
-        <Icons.OpenEye
-            className={clsx(!isHidden && 'hidden')}
-            focusable={true}
-            tabIndex={0}
-            onClick={handler}
-            onKeyDown={e => spaceEnterHandler(e, handler)}
-        />
-        <Icons.ClosedEye
-            className={clsx(isHidden && 'hidden')}
-            focusable={true}
-            tabIndex={0}
-            onClick={handler}
-            onKeyDown={e => spaceEnterHandler(e, handler)}
-        />
-    </>
-    );
-};
-
-const LoadingSpinner = ({ dataCyPrefix }: { dataCyPrefix?: string }) => {
-    dataCyPrefix = dataCyPrefix ? `${dataCyPrefix}-` : '';
-
-    return (
-        <>
-            <Spinner
-                data-cy={`${dataCyPrefix}loading-spinner`}
-                animation="border"
-            />
-        </>
-
     );
 };
 
