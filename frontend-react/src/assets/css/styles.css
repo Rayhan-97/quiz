@@ -306,6 +306,7 @@ form {
 .field-error span {
   color: #DF0000;
   align-self: flex-end;
+  text-align: end;
 }
 
 .form-error {

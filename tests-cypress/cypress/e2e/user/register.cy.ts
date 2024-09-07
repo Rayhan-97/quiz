@@ -20,7 +20,7 @@ describe('register flow', () => {
     cy.dataCy('password-input').type('password');
     cy.dataCy('confirmPassword-input').type('password');
 
-    cy.dataCy('register-submit-button').click();
+    cy.dataCy('submit-button').click();
 
     cy.dataCy('loading-spinner').should('exist');
 

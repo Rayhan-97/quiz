@@ -20,7 +20,7 @@ const Login = () => {
     const { setJwtAccessToken } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
-    const from = location.state?.from?.pathname || '';
+    const from = location.state?.from?.pathname || '/';
     const [isPasswordHidden, setIsPasswordHidden] = useState(true);
     const {
         register,
@@ -45,10 +45,6 @@ const Login = () => {
                 const { errorMessage } = error.response.data;
                 setError('root', { message: errorMessage });
                 return;
-            }
-
-            if (!isAxiosError(error)) {
-                console.error(error);
             }
 
             setError('root', { message: 'Server error' });

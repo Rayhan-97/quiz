@@ -1,10 +1,11 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { AxiosError, HttpStatusCode, InternalAxiosRequestConfig } from 'axios';
+import { HttpStatusCode } from 'axios';
 import { Location, MemoryRouter } from 'react-router-dom';
 import axiosInstance from '../../api/axios';
 import { AuthProvider } from '../../context/AuthContext';
 import Login from '../Login';
+import { buildAxiosError } from './util';
 
 const mockNavigate = jest.fn();
 const mockLocation: Location = {
@@ -25,7 +26,15 @@ jest.mock('../../api/axios');
 
 describe('Login component test', () => {
     beforeEach(() => {
-        renderLogin();
+        render(<Login />, {
+            wrapper: ({ children }) => (
+                <AuthProvider>
+                    <MemoryRouter>
+                        {children}
+                    </MemoryRouter>
+                </AuthProvider>
+            )
+        });
     });
 
     describe('Successful login path', () => {
@@ -39,7 +48,7 @@ describe('Login component test', () => {
 
             await waitFor(() => {
                 expect(axiosInstance.post).toHaveBeenCalled();
-                expect(mockNavigate).toHaveBeenCalledWith('', { replace: true });
+                expect(mockNavigate).toHaveBeenCalledWith('/', { replace: true });
             });
         });
     });
@@ -49,14 +58,13 @@ describe('Login component test', () => {
             userEvent.type(screen.getByTestId('email-input'), 'a@a.aa');
             userEvent.type(screen.getByTestId('password-input'), 'password');
 
-            // create barrier to stop post resolving
-            let barrierRelease: () => void;
-            const barrier = new Promise<void>(resolve => barrierRelease = resolve);
+            // Create a promise that will resolve when the condition is met
+            // to stop axios.post from resolving straight away
+            let responseResolve: ({ data }: { data: string }) => void;
             (axiosInstance.post as jest.Mock)
-                .mockImplementation(() => Promise.resolve(async () => {
-                    await barrier;
-                    return { data: 'some-token' };
-                }));
+                .mockImplementation(
+                    () => new Promise(resolve => responseResolve = resolve)
+                );
 
             const submitButton = screen.getByTestId('submit-button');
             expect(submitButton).toBeEnabled();
@@ -68,8 +76,9 @@ describe('Login component test', () => {
             expect(submitButton).toBeDisabled();
             expect(submitButton).toHaveTextContent('');
 
+            expect(mockNavigate).toHaveBeenCalledTimes(0);
             // resolve promise to continue with test
-            barrierRelease!();
+            responseResolve!({data: 'some-token'});
 
             await waitFor(() => {
                 expect(axiosInstance.post).toHaveBeenCalled();
@@ -100,21 +109,21 @@ describe('Login component test', () => {
                     const errorElement = await screen.findByText(errorMessage);
                     expect(errorElement).toHaveAttribute('data-cy', 'submit-error');
                 });
-    });
 
-    it('shows server error message when no response from server', async () => {
-        userEvent.type(screen.getByTestId('email-input'), 'a@a.aa');
-        userEvent.type(screen.getByTestId('password-input'), 'badPassword');
+        it('shows server error message when no response from server', async () => {
+            userEvent.type(screen.getByTestId('email-input'), 'a@a.aa');
+            userEvent.type(screen.getByTestId('password-input'), 'badPassword');
 
-        (axiosInstance.post as jest.Mock).mockRejectedValue({ isAxiosError: true });
+            (axiosInstance.post as jest.Mock).mockRejectedValue({ isAxiosError: true });
 
-        userEvent.click(screen.getByTestId('submit-button'));
+            userEvent.click(screen.getByTestId('submit-button'));
 
-        await waitFor(() => expect(axiosInstance.post).toHaveBeenCalled());
+            await waitFor(() => expect(axiosInstance.post).toHaveBeenCalled());
 
-        const errorMessage = 'Server error';
-        const errorElement = await screen.findByText(errorMessage);
-        expect(errorElement).toHaveAttribute('data-cy', 'submit-error');
+            const errorMessage = 'Server error';
+            const errorElement = await screen.findByText(errorMessage);
+            expect(errorElement).toHaveAttribute('data-cy', 'submit-error');
+        });
     });
 
     describe('UI validation', () => {
@@ -134,8 +143,6 @@ describe('Login component test', () => {
         });
 
         it('shows invalid email error when submitting bad email', async () => {
-            userEvent.type(screen.getByTestId('password-input'), 'validPassword');
-
             const invalidEmail = 'not an email';
             userEvent.type(screen.getByTestId('email-input'), invalidEmail);
 
@@ -148,25 +155,3 @@ describe('Login component test', () => {
         });
     });
 });
-
-const renderLogin = () => {
-    return render(<Login />, {
-        wrapper: ({ children }) => (<AuthProvider><MemoryRouter>{children}</MemoryRouter></AuthProvider>)
-    });
-};
-
-function buildAxiosError(statusCode: HttpStatusCode, errorMessage: string): AxiosError<unknown> {
-    return {
-        response: {
-            status: statusCode,
-            data: { errorMessage: errorMessage },
-            config: {} as InternalAxiosRequestConfig,
-            headers: {},
-            statusText: ''
-        },
-        isAxiosError: true,
-        toJSON: () => { throw new Error('Function not implemented.'); },
-        name: '',
-        message: ''
-    };
-}

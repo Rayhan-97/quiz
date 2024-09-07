@@ -1,348 +1,210 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Formik, FormikProps, useField } from 'formik';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { Button, Spinner } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import * as Yup from 'yup';
-import { BACKEND_URL } from '../util/constants';
-import { isValidEmail, isValidPassword, isValidUsername } from '../util/registerValidator';
-import capitalize from '../util/stringUtils';
+import { HttpStatusCode, isAxiosError } from 'axios';
+import clsx from 'clsx';
+import { useState } from 'react';
+import { Spinner } from 'react-bootstrap';
+import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from '../api/axios';
+import { ENDPOINTS } from '../util/constants';
+import { EMAIL_REGEX, USERNAME_REGEX } from '../util/registerValidator';
+import Icons from './Icons';
+import { spaceEnterHandler } from './Nav';
 
-const REGISTER_ENDPOINT = `${BACKEND_URL}/register`;
-
-interface RegisterFormValues {
-  username: string,
-  email: string,
-  password: string,
-  confirmPassword: string
+type FormValues = {
+    email: string;
+    username: string;
+    password: string;
+    confirmPassword: string;
 }
 
-interface RegisterFormErrorValidation {
-  username?: string,
-  email?: string,
-  password?: string,
-  confirmPassword?: string
-}
+const Register = () => {
+    const navigate = useNavigate();
+    const [isPasswordHidden, setIsPasswordHidden] = useState(true);
+    const {
+        register,
+        watch,
+        handleSubmit,
+        setError,
+        formState: { errors, isSubmitting }
+    } = useForm<FormValues>();
 
-interface RegisterFormSubmissionResponseError {
-  errorCode: number,
-  errorMessage: string
-}
+    const onSubmit = async ({ username, email, password }: FormValues) => {
+        try {
+            const response = await axios.post(
+                ENDPOINTS.register,
+                JSON.stringify({ username, email, password }),
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: false
+                },
+            );
+            if (response.status === HttpStatusCode.Ok) {
+                navigate('/login');
+            }
+        } catch (error) {
+            if (isAxiosError(error) && error.response?.status === HttpStatusCode.BadRequest) {
+                const { errorMessage } = error.response.data;
+                setError('root', { message: errorMessage });
+                return;
+            }
 
-const registerFormValidationSchema = Yup.object().shape({
-  username: Yup.string()
-    .min(6, 'Username must be at least 6 characters')
-    .max(32, 'Username must be less than 33 characters')
-    .test('isValidUsername', 'Username can only contain values a-zA-Z0-9_-', isValidUsername)
-    .required('Username required'),
-  email: Yup.string()
-    .test('isValidEmail', 'Invalid email', isValidEmail)
-    .required('Email required'),
-  password: Yup.string()
-    .min(8, 'Password must be at least 8 characters')
-    .max(127, 'Password must be less than 128 characters')
-    .test('isValidPassword', 'Invalid password', isValidPassword)
-    .required('Password required'),
-  confirmPassword: Yup.string()
-    .min(8, ' ')
-    .max(127, ' ')
-    .test('isValidPassword', ' ', isValidPassword)
-    .required('Confirm password required')
-});
+            if (!isAxiosError(error)) {
+                console.error(error);
+            }
 
-export default function Register() {
-  const navigate = useNavigate();
-  const formikRef = useRef<FormikProps<RegisterFormValues>>(null);
-  const [submissionError, setSubmissionError] = useState<string | undefined>(undefined);
-  const [formSubmitting, setFormSubmitting] = useState(false);
-
-  useEffect(() => {
-    formikRef.current?.validateForm();
-  }, [submissionError]);
-
-  useEffect(() => {
-    // trigger re-render to add/remove loading spinner
-  }, [formSubmitting]);
-
-  const handleSubmissionError = (errorJson?: RegisterFormSubmissionResponseError) => {
-    let message: string = 'Server error. Try again';
-
-    if (errorJson) {
-      const { errorCode, errorMessage } = errorJson;
-      message = `Error code <${errorCode}>. ${errorMessage}`;
-    }
-
-    setSubmissionError(message);
-  };
-
-  const submitPayload = async ({ username, email, password }: RegisterFormValues): Promise<void> => {
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: username,
-        email: email,
-        password: password
-      })
+            setError('root', { message: 'Server error' });
+        }
     };
 
-    const response = await fetch(REGISTER_ENDPOINT, requestOptions);
+    const toggleIsPasswordHidden = () => {
+        setIsPasswordHidden(prev => !prev);
+    };
 
-    if (response.ok) {
-      navigate('/login');
-      return;
-    }
+    const email = {
+        error: errors.email?.message,
+        register: register('email', {
+            required: 'Email required',
+            pattern: { value: EMAIL_REGEX, message: 'Invalid email' }
+        })
+    };
 
-    const errorJson: RegisterFormSubmissionResponseError = await response.json();
-    handleSubmissionError(errorJson);
-  };
+    const username = {
+        error: errors.username?.message,
+        register: register('username', {
+            required: 'Username required',
+            minLength: { value: 6, message: 'Username must be at least 6 characters' },
+            maxLength: { value: 32, message: 'Username must be less than 33 characters' },
+            pattern: { value: USERNAME_REGEX, message: 'Username can only contain values a-zA-Z0-9_-' }
+        })
+    };
 
-  const handleFormSubmission = async (values: RegisterFormValues): Promise<void> => {
-    clearSubmissionError();
-    setFormSubmitting(true);
+    const password = {
+        error: errors.password?.message,
+        register: register('password', {
+            required: 'Password required',
+            minLength: { value: 8, message: 'Password must be at least 8 characters' },
+            maxLength: { value: 127, message: 'Password must be less than 128 characters' },
+            validate: value => (watch('confirmPassword') === value || 'Passwords do not match')
+        })
+    };
 
-    try {
-      await submitPayload(values);
-    }
-    catch {
-      handleSubmissionError();
-    }
+    const confirmPassword = {
+        error: errors.confirmPassword?.message,
+        register: register('confirmPassword', {
+            required: 'Password required',
+            validate: value => (watch('password') === value || 'Passwords do not match')
+        })
+    };
 
-    setFormSubmitting(false);
-  };
+    return (<>
+        <div className={'form-container'} data-cy={'register-form'}>
+            <div className="form-wrapper">
+                <h1> Sign up </h1>
 
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    {
+                        errors.root &&
+                        <div data-cy={'submit-error'} className={'form-error'}>
+                            {errors.root.message!}
+                            <Icons.Error />
+                        </div>
+                    }
 
-  const validateForm = (values: RegisterFormValues): RegisterFormErrorValidation => {
-    if (submissionError) {
-      return {
-        username: ' ',
-        email: ' ',
-        password: ' ',
-        confirmPassword: ' ',
-      };
-    }
+                    <div className="fields-wrapper">
+                        <div className={clsx('field-container', email.error && 'field-error')}>
+                            <label htmlFor={'email'}>Email address</label>
+                            <input data-cy={'email-input'} id={'email'} {...email.register} />
+                            {email.error && <span data-cy={'email-error'}>{email.error}</span>}
+                        </div>
 
-    const errors: RegisterFormErrorValidation = {};
-    if (values.password !== values.confirmPassword) {
-      errors.password = 'Passwords do not match';
-      errors.confirmPassword = 'Passwords do not match';
-    }
+                        <div className={clsx('field-container', username.error && 'field-error')}>
+                            <label htmlFor={'username'}>Username</label>
+                            <input data-cy={'username-input'} id={'username'} {...username.register} />
+                            {username.error && <span data-cy={'username-error'}>{username.error}</span>}
+                        </div>
 
-    return errors;
-  };
+                        <div className={clsx('field-container', password.error && 'field-error')}>
+                            <label htmlFor={'password'}>Password</label>
+                            <div className="password-input-wrapper">
+                                <input
+                                    data-cy={'password-input'}
+                                    id={'password'}
+                                    type={isPasswordHidden ? 'password' : 'text'}
+                                    {...password.register}
+                                />
+                                <ShowHidePasswordIcons
+                                    isHidden={isPasswordHidden}
+                                    handler={toggleIsPasswordHidden}
+                                />
+                            </div>
+                            {password.error && <span data-cy={'password-error'}>{password.error}</span>}
+                        </div>
 
-  const clearSubmissionError = (): void => {
-    setSubmissionError(undefined);
-  };
+                        <div className={clsx('field-container', confirmPassword.error && 'field-error')}>
+                            <label htmlFor={'confirmPassword'}>Confirm password</label>
+                            <div className="password-input-wrapper">
+                                <input
+                                    data-cy={'confirmPassword-input'}
+                                    id={'confirmPassword'}
+                                    type={isPasswordHidden ? 'password' : 'text'}
+                                    {...confirmPassword.register}
+                                />
+                            </div>
+                            {confirmPassword.error && <span data-cy={'confirmPassword-error'}>{confirmPassword.error}</span>}
+                        </div>
+                    </div>
 
-  return (
-    <>
-      <div style={styles.container}>
-        <h2 style={styles.title}>Register</h2>
-
-        <Formik
-          innerRef={formikRef}
-          initialValues={{ username: '', email: '', password: '', confirmPassword: '' }}
-          validate={validateForm}
-          validationSchema={registerFormValidationSchema}
-          onSubmit={handleFormSubmission}
-        >
-          {({ handleChange, handleSubmit, isSubmitting }) => (
-            <form onSubmit={handleSubmit} data-cy="register-form">
-
-              <FormField
-                name="username"
-                onChange={value => {
-                  clearSubmissionError();
-                  handleChange('username')(value);
-                }}
-                props={{ type: 'text' }}
-              />
-
-              <FormField
-                name="email"
-                onChange={value => {
-                  clearSubmissionError();
-                  handleChange('email')(value);
-                }}
-                props={{ type: 'email' }}
-              />
-
-              <FormField
-                name="password"
-                onChange={value => {
-                  clearSubmissionError();
-                  handleChange('password')(value);
-                }}
-                props={{ type: 'password' }}
-              />
-
-              <FormField
-                label="Confirm password"
-                name="confirmPassword"
-                onChange={value => {
-                  clearSubmissionError();
-                  handleChange('confirmPassword')(value);
-                }}
-                props={{ type: 'password' }}
-              />
-
-              {submissionError && <ErrorText name='submission' errorMessage={submissionError} />}
-
-              <Button data-cy="register-submit-button" type="submit" disabled={isSubmitting}>
-                {isSubmitting
-                  ? <LoadingSpinner /> // TODO: fixme
-                  : 'Submit'}
-              </Button>
-
-              <Spinner animation="border" />
-
-            </form>
-          )}
-        </Formik>
-      </div>
+                    <button className={'primary'} data-cy={'submit-button'} disabled={isSubmitting}>
+                        {isSubmitting ? <LoadingSpinner /> : 'Sign in'}
+                    </button>
+                </form>
+            </div>
+            <span>
+                Already have an account?&nbsp;
+                <Link className={'link'} to='/login'>Sign in</Link>
+            </span>
+        </div>
     </>
-  );
+    );
+};
+
+type ShowHidePasswordIconsProps = {
+    isHidden: boolean,
+    handler: () => void
 }
 
-const LoadingSpinner = ({ dataCyPrefix }: { dataCyPrefix?: string }): JSX.Element => {
-  dataCyPrefix = dataCyPrefix ? `${dataCyPrefix}-` : '';
-
-  return (
-    <>
-      <Spinner
-        data-cy={`${dataCyPrefix}loading-spinner`}
-        animation="border"
-      />
+const ShowHidePasswordIcons = ({ isHidden, handler }: ShowHidePasswordIconsProps) => {
+    return (<>
+        <Icons.OpenEye
+            className={clsx(!isHidden && 'hidden')}
+            focusable={true}
+            tabIndex={0}
+            onClick={handler}
+            onKeyDown={e => spaceEnterHandler(e, handler)}
+        />
+        <Icons.ClosedEye
+            className={clsx(isHidden && 'hidden')}
+            focusable={true}
+            tabIndex={0}
+            onClick={handler}
+            onKeyDown={e => spaceEnterHandler(e, handler)}
+        />
     </>
-
-  );
+    );
 };
 
-type InputElementAttributes = React.DetailedHTMLProps<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  HTMLInputElement
->;
+const LoadingSpinner = ({ dataCyPrefix }: { dataCyPrefix?: string }) => {
+    dataCyPrefix = dataCyPrefix ? `${dataCyPrefix}-` : '';
 
-type LabelElementAttributes = React.DetailedHTMLProps<
-  React.LabelHTMLAttributes<HTMLLabelElement>,
-  HTMLLabelElement
->;
+    return (
+        <>
+            <Spinner
+                data-cy={`${dataCyPrefix}loading-spinner`}
+                animation="border"
+            />
+        </>
 
-type SpanElementAttributes = React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLSpanElement>,
-  HTMLSpanElement
->;
-
-// Define a generic type for the HTML element attributes
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-type ElementAttributes<T extends HTMLElement> =
-  | InputElementAttributes
-  | LabelElementAttributes
-  | SpanElementAttributes;
-
-interface FormFieldProps<T extends HTMLElement> {
-  label?: string;
-  name: string;
-  onChange: (e: string | ChangeEvent<any>) => void;
-  // Use the generic type for props
-  props?: ElementAttributes<T>;
-}
-
-const FormField = <T extends HTMLElement>({ label, name, onChange, ...props }: FormFieldProps<T>): JSX.Element => {
-  const [field, meta] = useField(name);
-
-  // Show inline feedback if EITHER
-  // - the input is focused AND value is longer than 2 characters
-  // - or, the has been visited (touched === true)
-  const [didFocus, setDidFocus] = useState(false);
-  const handleFocus = () => setDidFocus(true);
-
-  const showFeedback = meta.touched || (!!didFocus && field.value.trim().length > 3);
-  const fieldLabel = label ? label : capitalize(name);
-
-  return (
-    <div className="form-field-container">
-      <div className="form-field-name-container">
-        <label style={styles.formLabel} htmlFor={name}>{fieldLabel}</label>
-        {showFeedback ? (meta.error ? (
-          <ErrorText name={name} errorMessage={meta.error} />
-        ) : <span style={styles.successText}>✓</span>
-        ) : null}
-      </div>
-
-      <input data-cy={`${name}-input`} {...field} {...props} onFocus={handleFocus} onChange={onChange} />
-    </div>
-  );
+    );
 };
 
-const ErrorText = ({ name, errorMessage }: { name: string, errorMessage: string }): JSX.Element => {
-  return (
-    <>
-      <span data-cy={`${name}-error`} style={styles.errorText}>{errorMessage}</span>
-    </>
-  );
-};
-
-const styles = {
-  container: {
-    // flex: 1,
-    alignItems: 'center',
-    // justifyContent: "center",
-  },
-  horizontalContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-  formLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    paddingRight: 20
-  },
-  field: {
-    borderWidth: 2,
-    borderColor: '#5C5C5C',
-    minHeight: 56,
-    borderRadius: 4,
-    paddingHorizontal: 14,
-    marginTop: 4
-  },
-  fieldError: {
-    borderColor: '#EB3F24'
-  },
-  fieldSuccess: {
-    borderColor: '#24E813'
-  },
-  errorText: {
-    color: '#EB3F24'
-  },
-  successText: {
-    color: '#24E813'
-  },
-  submitButton: {
-    flex: 1,
-    margin: 'auto',
-    textAlign: 'center',
-    minWidth: '40%',
-    borderWidth: 2,
-    borderColor: '#5C5C5C',
-    borderRadius: 4,
-    padding: 14,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-};
-
-// const fieldErrorStyle = {...styles.field, ...styles.fieldError};
-// const fieldSuccessStyle = StyleSheet.compose(styles.field, styles.fieldSuccess);
+export default Register;
