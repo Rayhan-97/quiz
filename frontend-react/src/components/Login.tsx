@@ -1,22 +1,19 @@
 import { HttpStatusCode, isAxiosError } from 'axios';
 import clsx from 'clsx';
-import { useForm, UseFormRegisterReturn } from 'react-hook-form';
+import { useState } from 'react';
+import { Spinner } from 'react-bootstrap';
+import { useForm } from 'react-hook-form';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
 import useAuth from '../hooks/useAuth';
-import { EMAIL_REGEX } from '../util/registerValidator';
-import capitalize from '../util/stringUtils';
-import { Spinner } from 'react-bootstrap';
 import { ENDPOINTS } from '../util/constants';
+import { EMAIL_REGEX } from '../util/registerValidator';
+import Icons from './Icons';
+import { spaceEnterHandler } from './Nav';
 
 type FormValues = {
     email: string;
     password: string
-}
-
-type SubmissionResponseError = {
-    errorCode: number,
-    errorMessage: string
 }
 
 const Login = () => {
@@ -24,7 +21,7 @@ const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || '';
-
+    const [isPasswordHidden, setIsPasswordHidden] = useState(true);
     const {
         register,
         handleSubmit,
@@ -41,12 +38,11 @@ const Login = () => {
                     headers: { 'Content-Type': 'application/json' }
                 }
             );
-            const token: string = response.data;
-            setJwtAccessToken(token);
+            setJwtAccessToken(response.data);
             navigate(from, { replace: true });
         } catch (error) {
             if (isAxiosError(error) && error.response?.status === HttpStatusCode.BadRequest) {
-                const { errorMessage }: SubmissionResponseError = error.response.data;
+                const { errorMessage } = error.response.data;
                 setError('root', { message: errorMessage });
                 return;
             }
@@ -59,60 +55,97 @@ const Login = () => {
         }
     };
 
-    return (
-        <>
-            <div className={'form-container'}>
-                <form className={'form'} onSubmit={handleSubmit(onSubmit)}>
-                    <FormField
-                        name={'email'} error={errors.email?.message}
-                        register={register('email', {
-                            required: 'Email required',
-                            pattern: { value: EMAIL_REGEX, message: 'Invalid email' }
-                        })}
-                    />
-                    <FormField
-                        name={'password'} error={errors.password?.message}
-                        register={register('password', { required: 'Password required' })}
-                    />
+    const toggleIsPasswordHidden = () => {
+        setIsPasswordHidden(prev => !prev);
+    };
 
-                    {errors.root && <ErrorText name='submit' errorMessage={errors.root.message!} />}
+    const email = {
+        error: errors.email?.message,
+        register: register('email', {
+            required: 'Email required',
+            pattern: { value: EMAIL_REGEX, message: 'Invalid email' }
+        })
+    };
 
-                    <button data-cy={'submit-button'} disabled={isSubmitting}>
+    const password = {
+        error: errors.password?.message,
+        register: register('password', { required: 'Password required' })
+    };
+
+    return (<>
+        <div className={'form-container'}>
+            <div className="form-wrapper">
+                <h1> Welcome to<br />OurQuiz </h1>
+
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    {
+                        errors.root &&
+                        <div data-cy={'submit-error'} className={'form-error'}>
+                            {errors.root.message!}
+                            <Icons.Error />
+                        </div>
+                    }
+
+                    <div className="fields-wrapper">
+                        <div className={clsx('field-container', email.error && 'field-error')}>
+                            <label htmlFor={'email'}>Email address</label>
+                            <input data-cy={'email-input'} id={'email'} {...email.register} />
+                            {email.error && <span data-cy={'email-error'}>{email.error}</span>}
+                        </div>
+                        <div className={clsx('field-container', password.error && 'field-error')}>
+                            <label htmlFor={'password'}>Password</label>
+                            <div className="password-input-wrapper">
+                                <input
+                                    data-cy={'password-input'}
+                                    id={'password'}
+                                    type={isPasswordHidden ? 'password' : 'text'}
+                                    {...password.register}
+                                />
+                                <ShowHidePasswordIcons
+                                    isHidden={isPasswordHidden}
+                                    handler={toggleIsPasswordHidden}
+                                />
+                            </div>
+                            {password.error && <span data-cy={'password-error'}>{password.error}</span>}
+                        </div>
+                    </div>
+
+                    <button className={'primary'} data-cy={'submit-button'} disabled={isSubmitting}>
                         {isSubmitting ? <LoadingSpinner /> : 'Sign in'}
                     </button>
                 </form>
-                <Link to='/register'>Sign Up</Link>
             </div>
-        </>
+            <span>
+                Don&apos;t already have an account?&nbsp;
+                <Link className={'link'} to='/register'>Sign up</Link>
+            </span>
+        </div>
+    </>
     );
 };
 
-type FormFieldType = {
-    name: string;
-    fieldLabel?: string;
-    error?: string;
-    register: UseFormRegisterReturn;
+type ShowHidePasswordIconsProps = {
+    isHidden: boolean,
+    handler: () => void
 }
 
-const FormField = ({ name, fieldLabel = capitalize(name), error, register }: FormFieldType) => {
-    return (
-        <div className={clsx('form-field-container', error && 'form-error')}>
-            <div className={'form-field-name-container'}>
-                <label className={'form-label'} htmlFor={name}>{fieldLabel}</label>
-                {error && <ErrorText name={name} errorMessage={error} />
-                }
-            </div>
-
-            <input data-cy={`${name}-input`} id={name} {...register} />
-        </div>
-    );
-};
-
-const ErrorText = ({ name, errorMessage }: { name: string, errorMessage: string }): JSX.Element => {
-    return (
-        <>
-            <span data-cy={`${name}-error`} className={'errortext'}>{errorMessage}</span>
-        </>
+const ShowHidePasswordIcons = ({ isHidden, handler }: ShowHidePasswordIconsProps) => {
+    return (<>
+        <Icons.OpenEye
+            className={clsx(!isHidden && 'hidden')}
+            focusable={true}
+            tabIndex={0}
+            onClick={handler}
+            onKeyDown={e => spaceEnterHandler(e, handler)}
+        />
+        <Icons.ClosedEye
+            className={clsx(isHidden && 'hidden')}
+            focusable={true}
+            tabIndex={0}
+            onClick={handler}
+            onKeyDown={e => spaceEnterHandler(e, handler)}
+        />
+    </>
     );
 };
 

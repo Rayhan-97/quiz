@@ -3,6 +3,9 @@ import { ReactComponent as HamburgerIcon } from '../assets/icons/hamburgerMenu.s
 import { ReactComponent as CloseIcon } from '../assets/icons/close.svg';
 import { ReactComponent as SunIcon } from '../assets/icons/sun.svg';
 import { ReactComponent as MoonIcon } from '../assets/icons/moon.svg';
+import { ReactComponent as ErrorIcon } from '../assets/icons/error.svg';
+import { ReactComponent as OpenEyeIcon } from '../assets/icons/openEye.svg';
+import { ReactComponent as ClosedEyeIcon } from '../assets/icons/closedEye.svg';
 import { ReactComponent as FullLogoSvg } from '../assets/icons/fullLogo.svg';
 import { ReactComponent as LogoSvg } from '../assets/icons/logo.svg';
 import clsx from 'clsx';
@@ -19,8 +22,8 @@ type BaseIconProps = {
 
 const BaseIcon = ({ children, name, clickable = false }: BaseIconProps) => {
     return <>
-            <div className="icon-wrapper">
-        <div className={clsx('icon', name, clickable && 'clickable')}>
+        <div className="icon-wrapper">
+            <div className={clsx('icon', name, clickable && 'clickable')}>
                 {children}
             </div>
         </div>
@@ -59,6 +62,31 @@ const Moon = (props: SvgIconProps) => {
     </>;
 };
 
+const Error = (props: SvgIconProps) => {
+    return <>
+        <BaseIcon name={'error'}>
+            <ErrorIcon height={'100%'} width={'100%'} {...props} />
+        </BaseIcon>
+    </>;
+};
+
+const OpenEye = (props: SvgIconProps) => {
+    return <>
+        <BaseIcon name={'open-eye'} clickable={true}>
+            <OpenEyeIcon height={'100%'} width={'100%'} {...props} />
+        </BaseIcon>
+    </>;
+};
+
+const ClosedEye = (props: SvgIconProps) => {
+    return <>
+        <BaseIcon name={'closed-eye'} clickable={true}>
+            <ClosedEyeIcon height={'100%'} width={'100%'} {...props} />
+        </BaseIcon>
+    </>;
+};
+
+
 const FullLogo = (props: SvgIconProps) => {
     return <>
         <BaseIcon name={'full-logo'}>
@@ -82,6 +110,12 @@ const Icons = {
     Close,
     Sun,
     Moon,
+
+    OpenEye,
+    ClosedEye,
+    
+    Error,
+
     FullLogo,
     Logo,
 };

@@ -4,7 +4,7 @@ import { Link, LinkProps } from 'react-router-dom';
 import Icons from './Icons';
 import useTheme from '../hooks/useTheme';
 
-const spaceEnterHandler = (e: React.KeyboardEvent<Element>, eventHandler: () => void) => {
+export const spaceEnterHandler = (e: React.KeyboardEvent<Element>, eventHandler: () => void) => {
   if (e.key === 'Enter' || e.key === ' ') {
     eventHandler();
   }

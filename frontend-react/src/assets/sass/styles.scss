@@ -6,12 +6,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
-@function strip-units($number) {
+@function stripUnits($number) {
     @return math.div($number, ($number * 0 + 1));
 }
 
 @function toRem($pixelValue) {
-    @return math.div(strip-units($pixelValue), 16) * 1rem;
+    @return math.div(stripUnits($pixelValue), 16) * 1rem;
 }
 
 @mixin flexCentre($direction: row) {
@@ -22,9 +22,17 @@
 }
 
 
-$white-100: hsl (0, 0, 100%);
-$white-73: hsl(0, 0%, 73%);
+// **************
+// --------------------COLORS-------------------------------
+// **************
+$white-blue: rgb(232, 240, 254);
 
+$white-100: hsl(0, 0%, 100%);
+$white-73: hsl(0, 0%, 73%);
+$black-63: hsl(0, 0%, 37%);
+$errorRed: #DF0000;
+$primary: hsl(253, 51%, 43%);
+$outline: #{color.adjust($color: $primary, $hue: 180)}; // complement of $primary
 
 $colors: (
     'light': ('bg': hsl(0, 0%, 96%),
@@ -33,6 +41,9 @@ $colors: (
         'fg-light': hsl(0, 0%, 9%),
         'primary': hsl(253, 51%, 43%),
         'nav': hsl(253, 51%, 43%),
+        'input-bg': $white-blue,
+        'icon': $black-63,
+        'icon-bg': rgba($white-73, $alpha: 0.2),
 
     ),
     'dark': ('bg': hsl(0, 0%, 9%),
@@ -41,6 +52,9 @@ $colors: (
         'fg-light': hsl(0, 0%, 73%),
         'primary': hsl(253, 51%, 43%),
         'nav': hsl(0, 0%, 0%),
+        'input-bg': hsl(0, 0%, 14%),
+        'icon': $white-73,
+        'icon-bg': rgba($white-73, $alpha: 0.2),
     )
 );
 
@@ -72,28 +86,35 @@ $themeMap: null;
                 '-rgb',
             );
 
-            @for $i from 1 through length($values) {
-                $cssVariableName: --#{$colorVar}#{nth($suffixes, $i)};
-                #{$cssVariableName}: #{nth($values, $i)};
-            }
-        }
-    }
-
-    .theme-dark {
-        @each $colorVar, $values in map-get($map: $colors, $key: 'dark') {
-            $suffixes: (
-                '',
-                '-rgb',
-            );
-
-            @for $i from 1 through length($values) {
-                $cssVariableName: --#{$colorVar}#{nth($suffixes, $i)};
-                #{$cssVariableName}: #{nth($values, $i)};
-            }
+        @for $i from 1 through length($values) {
+            $cssVariableName: --#{$colorVar}#{nth($suffixes, $i)};
+            #{$cssVariableName}: #{nth($values, $i)};
         }
     }
 }
 
+.theme-dark {
+    @each $colorVar, $values in map-get($map: $colors, $key: 'dark') {
+        $suffixes: (
+            '',
+            '-rgb',
+        );
+
+    @for $i from 1 through length($values) {
+        $cssVariableName: --#{$colorVar}#{nth($suffixes, $i)};
+        #{$cssVariableName}: #{nth($values, $i)};
+    }
+}
+}
+}
+//                                            **************
+// --------------------COLORS-------------------------------
+//                                            **************
+
+
+// **************
+// --------------------RESET-------------------------------
+// **************
 /* Reset some basic elements */
 * {
     margin: 0;
@@ -104,20 +125,65 @@ $themeMap: null;
     line-height: 1.2rem;
 
     :focus {
-        outline: none;
+        outline: transparent;
     }
 
     :focus-visible {
+        outline: solid toRem(2px) $outline;
         outline-offset: toRem(4px);
-    }
-
-    @include themify() {
-        :focus-visible {
-            outline: solid toRem(2px) color.adjust($color: t(primary), $hue: 180);
-        }
     }
 }
 
+@include themify() {
+
+    &,
+    input {
+        color: t(fg);
+    }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-family: "Outfit", sans-serif;
+    font-size: toRem(42px);
+    line-height: toRem(44px);
+}
+//                                           **************
+// --------------------RESET-------------------------------
+//                                           **************
+
+
+// **************
+// --------------------LAYOUT & THEME------------------------
+// **************
+.theme-light {
+    .form-container {
+        border: 1px solid themedColor(fg);
+    }
+    input {
+        border: 1px solid themedColor(fg);
+    }
+
+    button.primary {
+        color: $white-100;
+    }
+}
+
+.content-container {
+    display: flex;
+    justify-content: center;
+    padding: 2em 1em;
+}
+//                                           **************
+// --------------------LAYOUT & THEME----------------------
+//                                           **************
+
+// **************
+// --------------------NAVIGATION-------------------------------
+// **************
 .nav-container {
     container: navbar / inline-size;
     @include flexCentre(column);
@@ -154,8 +220,7 @@ menu {
 
 @container navbar (min-width: 40em) {
     nav {
-        width: calc(100% - 2em);
-        max-width: 60em;
+        width: min(calc(100% - 2em), 60em);
         border-radius: toRem(30px);
         border: none;
         padding: 1em 1.5em;
@@ -184,6 +249,14 @@ menu {
     }
 }
 
+//                                                **************
+// --------------------NAVIGATION-------------------------------
+//                                                **************
+
+
+// **************
+// --------------------BUTTONS-------------------------------
+// **************
 button {
     background-color: transparent;
     padding: 1em 3em;
@@ -203,10 +276,16 @@ button {
         cursor: pointer;
     }
 }
+//                                                **************
+// --------------------BUTTONS-------------------------------
+//                                                **************
 
+
+// **************
+// --------------------ICONS-------------------------------
+// **************
 .icon {
     height: toRem(24px);
-    color: $white-73;
 
     &.logo,
     &.full-logo {
@@ -221,10 +300,18 @@ button {
         height: toRem(28px);
     }
 
+    &.open-eye {
+        height: toRem(20px);
+    }
+
     &.clickable {
-        :hover {
+        &:hover {
             cursor: pointer;
-            color: white;
+            color: themedColor(fg);
+
+            &::before {
+                opacity: 1;
+            }
         }
 
         &::before {
@@ -235,13 +322,12 @@ button {
             translate: -50% -50%;
             width: 100%;
             aspect-ratio: 1;
-            background-color: rgba($white-73, $alpha: 0.2);
+            background-color: themedColor(icon-bg);
             opacity: 0;
             border-radius: 50%;
             box-sizing: content-box;
             padding: toRem(4px);
             pointer-events: none;
-
         }
     }
 
@@ -256,12 +342,7 @@ button {
 
 .icon-wrapper {
     position: relative;
-
-    .icon:hover {
-        &::before {
-            opacity: 1;
-        }
-    }
+    color: themedColor(icon)
 }
 
 .hidden,
@@ -269,51 +350,157 @@ button {
     display: none;
 }
 
+//                                           **************
+// --------------------ICONS-------------------------------
+//                                           **************
+
+
+// **************
+// --------------------LINKS-------------------------------
+// **************
 a {
     color: themedColor(fg);
     text-decoration: none;
 }
 
+.link {
+    color: themedColor(primary);
+
+    &:hover {
+        text-decoration: underline;
+        text-underline-offset: toRem(2px);
+    }
+}
+//                                           **************
+// --------------------LINKS-------------------------------
+//                                           **************
 
 
+// **************
+// --------------------FORMS-------------------------------
+// **************
 
-
-
-
-
-.content-container {
-    display: flex;
-    justify-content: center;
-    padding: 2em;
+.form-container {
+    @include flexCentre(column);
+    gap: toRem(32px);
+    border-radius: toRem(30px);
+    background-color: themedColor(bg-contrast);
+    padding: 2em 1em;
+    min-width: 19.5em;
+    width: min(40%, 24em);
 }
 
-.form {
-    display: flex;
-    flex-direction: column;
+form {
+    @include flexCentre(column);
+    gap: toRem(32px);
 }
 
-.login-form-container {
-    display: flex;
-    flex-direction: column;
+.fields-wrapper {
+    @include flexCentre(column);
+    gap: toRem(10px);
+    width: 100%;
 }
 
-.form-field {
-    display: flex;
-    flex-direction: column;
-    padding-bottom: 6px;
-    margin: 2px;
+.form-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 0em 1em;
+    gap: toRem(32px);
+    width: 100%;
 }
 
-.form-error input {
-    border-color: red;
+.field-container {
+    @include flexCentre(column);
+    align-items: flex-start;
+    gap: toRem(4px);
+    width: 100%;
+
+    >div,
+    input {
+        width: 100%;
+    }
+
+    input {
+        border-radius: toRem(10px);
+        background-color: themedColor(input-bg);
+        border: none;
+        padding: 0.6em 1em;
+        transition: 300ms ease-in-out 100ms;
+
+        &:focus,
+        &:focus-visible {
+            outline: transparent;
+            border: 1px solid themedColor(fg);
+        }
+
+        &:hover {
+            scale: 1.05;
+        }
+    }
 }
 
-.form-label {
-    font-size: 16px;
-    font-weight: bold;
-    padding-right: 20px;
+.field-error {
+    input {
+        border: 1px solid $errorRed;
+
+        &:focus {
+            border: 1px solid $errorRed;
+            outline: 1px solid themedColor(fg);
+            outline-offset: toRem(2px);
+        }
+    }
+
+    span {
+        color: $errorRed;
+        align-self: flex-end;
+    }
 }
 
-.errortext {
-    color: "#EB3F24"
+.form-error {
+    border: 1px solid $errorRed;
+    border-radius: toRem(10px);
+    width: 100%;
+    padding: 1em;
+    text-align: center;
+    color: $errorRed;
+    position: relative;
+
+    .icon-wrapper {
+        color: $errorRed;
+        position: absolute;
+        right: 0;
+        top: 0;
+        translate: 40% -40%;
+        background-color: themedColor(bg-contrast);
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            translate: -50% -45%;
+            width: 100%;
+            aspect-ratio: 1;
+            background-color: themedColor(bg-contrast);
+            border-radius: 50%;
+            box-sizing: content-box;
+            padding: toRem(3px);
+            pointer-events: none;
+            z-index: -1;
+        }
+    }
 }
+
+.password-input-wrapper {
+    position: relative;
+
+    .icon-wrapper {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        translate: -40% -50%;
+    }
+}
+//                                           **************
+// --------------------FORMS-------------------------------
+//                                           **************
