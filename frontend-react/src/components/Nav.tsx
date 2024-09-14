@@ -100,7 +100,7 @@ type LinkButtonProps = LinkProps
     type: ButtonType
   }
 
-const LinkButton = ({ children, type, ...props }: LinkButtonProps) => {
+export const LinkButton = ({ children, type, ...props }: LinkButtonProps) => {
   return (
     <>
       <Link {...props}>

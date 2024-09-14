@@ -6,6 +6,7 @@ import { ReactComponent as MoonIcon } from '../assets/icons/moon.svg';
 import { ReactComponent as ErrorIcon } from '../assets/icons/error.svg';
 import { ReactComponent as OpenEyeIcon } from '../assets/icons/openEye.svg';
 import { ReactComponent as ClosedEyeIcon } from '../assets/icons/closedEye.svg';
+import { ReactComponent as QuoteMarksSvg } from '../assets/icons/quoteMarks.svg';
 import { ReactComponent as FullLogoSvg } from '../assets/icons/fullLogo.svg';
 import { ReactComponent as LogoSvg } from '../assets/icons/logo.svg';
 import clsx from 'clsx';
@@ -86,6 +87,14 @@ const ClosedEye = (props: SvgIconProps) => {
     </>;
 };
 
+const QuoteMarks = (props: SvgIconProps) => {
+    return <>
+        <BaseIcon name={'quote-marks'}>
+            <QuoteMarksSvg height={'100%'} width={'100%'} {...props} />
+        </BaseIcon>
+    </>;
+};
+
 
 const FullLogo = (props: SvgIconProps) => {
     return <>
@@ -115,6 +124,8 @@ const Icons = {
     ClosedEye,
     
     Error,
+
+    QuoteMarks,
 
     FullLogo,
     Logo,
