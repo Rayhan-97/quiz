@@ -97,7 +97,7 @@ const Register = () => {
 
     return (<>
         <div className={'form-container'} data-cy={'register-form'}>
-            <div className="form-wrapper">
+            <div className={'form-wrapper'}>
                 <h1> Sign up </h1>
 
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -109,7 +109,7 @@ const Register = () => {
                         </div>
                     }
 
-                    <div className="fields-wrapper">
+                    <div className={'fields-wrapper'}>
                         <div className={clsx('field-container', email.error && 'field-error')}>
                             <label htmlFor={'email'}>Email address</label>
                             <input data-cy={'email-input'} id={'email'} type={'email'} {...email.register} />
@@ -124,7 +124,7 @@ const Register = () => {
 
                         <div className={clsx('field-container', password.error && 'field-error')}>
                             <label htmlFor={'password'}>Password</label>
-                            <div className="password-input-wrapper">
+                            <div className={'password-input-wrapper'}>
                                 <input
                                     data-cy={'password-input'}
                                     id={'password'}
@@ -138,7 +138,7 @@ const Register = () => {
 
                         <div className={clsx('field-container', confirmPassword.error && 'field-error')}>
                             <label htmlFor={'confirmPassword'}>Confirm password</label>
-                            <div className="password-input-wrapper">
+                            <div className={'password-input-wrapper'}>
                                 <input
                                     data-cy={'confirmPassword-input'}
                                     id={'confirmPassword'}
@@ -157,7 +157,7 @@ const Register = () => {
             </div>
             <span>
                 Already have an account?&nbsp;
-                <Link className={'link'} to='/login'>Sign in</Link>
+                <Link className={'link'} to={'/login'}>Sign in</Link>
             </span>
         </div>
     </>

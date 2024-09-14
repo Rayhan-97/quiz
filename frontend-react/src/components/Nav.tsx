@@ -23,10 +23,10 @@ const Nav = () => {
 
   return (
     <>
-      <div className="nav-container">
+      <div className={'nav-container'}>
         <nav>
-          <Link to="/"><Icons.Logo /></Link>
-          <Link to="/"><Icons.FullLogo /></Link>
+          <Link to={'/'}><Icons.Logo /></Link>
+          <Link to={'/'}><Icons.FullLogo /></Link>
           <div>
             <DarkModeToggle />
             <LinkButton to={'/login'} tabIndex={-1} type={'primary'}>Sign in</LinkButton>

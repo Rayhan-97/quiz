@@ -21,7 +21,7 @@ interface ContentContainerProps {
 
 const ContentContainer: React.FC<ContentContainerProps> = ({ children }) => {
   return (
-    <div className="content-container">{children}</div>
+    <div className={'content-container'}>{children}</div>
   );
 };
 

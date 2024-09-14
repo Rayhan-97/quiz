@@ -69,7 +69,7 @@ const Login = () => {
 
     return (<>
         <div className={'form-container'}>
-            <div className="form-wrapper">
+            <div className={'form-wrapper'}>
                 <h1> Welcome to<br />OurQuiz </h1>
 
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -81,7 +81,7 @@ const Login = () => {
                         </div>
                     }
 
-                    <div className="fields-wrapper">
+                    <div className={'fields-wrapper'}>
                         <div className={clsx('field-container', email.error && 'field-error')}>
                             <label htmlFor={'email'}>Email address</label>
                             <input data-cy={'email-input'} id={'email'} type={'email'} {...email.register} />
@@ -89,7 +89,7 @@ const Login = () => {
                         </div>
                         <div className={clsx('field-container', password.error && 'field-error')}>
                             <label htmlFor={'password'}>Password</label>
-                            <div className="password-input-wrapper">
+                            <div className={'password-input-wrapper'}>
                                 <input
                                     data-cy={'password-input'}
                                     id={'password'}
@@ -112,7 +112,7 @@ const Login = () => {
             </div>
             <span>
                 Don&apos;t have an account?&nbsp;
-                <Link className={'link'} to='/register'>Sign up</Link>
+                <Link className={'link'} to={'/register'}>Sign up</Link>
             </span>
         </div>
     </>

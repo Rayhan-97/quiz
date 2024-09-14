@@ -23,7 +23,7 @@ type BaseIconProps = {
 
 const BaseIcon = ({ children, name, clickable = false }: BaseIconProps) => {
     return <>
-        <div className="icon-wrapper">
+        <div className={'icon-wrapper'}>
             <div className={clsx('icon', name, clickable && 'clickable')}>
                 {children}
             </div>
